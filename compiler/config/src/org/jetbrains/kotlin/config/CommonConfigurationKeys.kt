@@ -58,3 +58,6 @@ var CompilerConfiguration.languageVersionSettings: LanguageVersionSettings
 
 val LanguageVersionSettings.isTypeRefinementEnabled: Boolean
     get() = getFlag(AnalysisFlags.useTypeRefinement)
+
+val LanguageVersionSettings.isLibraryToSourceAnalysisEnabled: Boolean
+    get() = getFlag(AnalysisFlags.libraryToSourceAnalysis)

@@ -18,3 +18,6 @@ interface ResolutionAnchorProvider {
 }
 
 val RESOLUTION_ANCHOR_PROVIDER_CAPABILITY = ModuleDescriptor.Capability<ResolutionAnchorProvider>("ResolutionAnchorProvider")
+
+fun ModuleDescriptor.getResolutionAnchorIfAny(): ModuleDescriptor? =
+    getCapability(RESOLUTION_ANCHOR_PROVIDER_CAPABILITY)?.getResolutionAnchor(this)
