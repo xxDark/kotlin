@@ -1,3 +1,4 @@
+// FIR_IDENTICAL
 val testVal: Int get() = 42
 
 val testValNoType get() = 42

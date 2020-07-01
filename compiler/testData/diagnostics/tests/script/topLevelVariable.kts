@@ -1,4 +1,5 @@
 // !DIAGNOSTICS: -UNUSED_PARAMETER -UNUSED_VARIABLE
+// FIR_IDENTICAL
 
 import kotlin.reflect.KProperty
 

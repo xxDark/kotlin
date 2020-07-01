@@ -1,3 +1,4 @@
+// FIR_IDENTICAL
 // !LANGUAGE: -LocalDelegatedProperties
 
 // FILE: script.kts
