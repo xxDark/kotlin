@@ -48,6 +48,7 @@ public class KtScript extends KtNamedDeclarationStub<KotlinScriptStub> implement
         return containingKtFile.getPackageFqName().child(fileBasedName);
     }
 
+    @NotNull
     @Override
     public String getName() {
         return getFqName().shortName().asString();

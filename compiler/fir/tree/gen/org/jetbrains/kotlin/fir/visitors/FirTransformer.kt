@@ -46,6 +46,7 @@ import org.jetbrains.kotlin.fir.declarations.FirSimpleFunction
 import org.jetbrains.kotlin.fir.declarations.FirPropertyAccessor
 import org.jetbrains.kotlin.fir.declarations.FirConstructor
 import org.jetbrains.kotlin.fir.declarations.FirFile
+import org.jetbrains.kotlin.fir.declarations.FirScript
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousFunction
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousObject
 import org.jetbrains.kotlin.fir.diagnostics.FirDiagnosticHolder
@@ -299,6 +300,10 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
 
     open fun transformFile(file: FirFile, data: D): CompositeTransformResult<FirDeclaration> {
         return transformElement(file, data)
+    }
+
+    open fun transformScript(script: FirScript, data: D): CompositeTransformResult<FirDeclaration> {
+        return transformElement(script, data)
     }
 
     open fun transformAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): CompositeTransformResult<FirStatement> {
@@ -799,6 +804,10 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
 
     final override fun visitFile(file: FirFile, data: D): CompositeTransformResult<FirDeclaration> {
         return transformFile(file, data)
+    }
+
+    final override fun visitScript(script: FirScript, data: D): CompositeTransformResult<FirDeclaration> {
+        return transformScript(script, data)
     }
 
     final override fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): CompositeTransformResult<FirStatement> {

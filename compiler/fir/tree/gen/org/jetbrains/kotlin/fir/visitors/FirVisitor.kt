@@ -46,6 +46,7 @@ import org.jetbrains.kotlin.fir.declarations.FirSimpleFunction
 import org.jetbrains.kotlin.fir.declarations.FirPropertyAccessor
 import org.jetbrains.kotlin.fir.declarations.FirConstructor
 import org.jetbrains.kotlin.fir.declarations.FirFile
+import org.jetbrains.kotlin.fir.declarations.FirScript
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousFunction
 import org.jetbrains.kotlin.fir.declarations.FirAnonymousObject
 import org.jetbrains.kotlin.fir.diagnostics.FirDiagnosticHolder
@@ -218,6 +219,8 @@ abstract class FirVisitor<out R, in D> {
     open fun visitConstructor(constructor: FirConstructor, data: D): R  = visitElement(constructor, data)
 
     open fun visitFile(file: FirFile, data: D): R  = visitElement(file, data)
+
+    open fun visitScript(script: FirScript, data: D): R  = visitElement(script, data)
 
     open fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction, data: D): R  = visitElement(anonymousFunction, data)
 

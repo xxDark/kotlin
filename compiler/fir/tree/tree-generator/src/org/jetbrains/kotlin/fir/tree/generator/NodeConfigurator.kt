@@ -407,6 +407,13 @@ object NodeConfigurator : AbstractFieldConfigurator<FirTreeBuilder>(FirTreeBuild
             +field("packageFqName", fqNameType)
         }
 
+        script.configure {
+            parentArg(callableDeclaration, "F", script)
+            +symbol("FirScriptSymbol")
+            +fieldList(declaration).withTransform()
+            +name
+        }
+
         import.configure {
             +field("importedFqName", fqNameType, nullable = true)
             +booleanField("isAllUnder")
