@@ -10,6 +10,6 @@ import java.io.File
 abstract class AbstractDiagnosticsTestWithFirValidation : AbstractDiagnosticsTest() {
     override fun shouldValidateFirTestData(testDataFile: File): Boolean {
         val path = testDataFile.absolutePath
-        return !path.endsWith(".kts") && !path.contains("codegen")
+        return !path.contains("codegen")
     }
 }
