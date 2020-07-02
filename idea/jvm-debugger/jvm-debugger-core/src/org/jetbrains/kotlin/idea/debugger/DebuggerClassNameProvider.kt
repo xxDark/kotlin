@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.idea.debugger
 import com.intellij.debugger.SourcePosition
 import com.intellij.debugger.engine.DebugProcess
 import com.intellij.debugger.engine.DebuggerUtils
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
@@ -53,7 +54,11 @@ class DebuggerClassNameProvider(
     val findInlineUseSites: Boolean = true,
     val alwaysReturnLambdaParentClass: Boolean = true
 ) {
+    val start = System.currentTimeMillis()
+
     companion object {
+        val log = logger<DebuggerClassNameProvider>()
+
         private val CLASS_ELEMENT_TYPES = arrayOf<Class<out PsiElement>>(
             KtScript::class.java,
             KtFile::class.java,
@@ -121,6 +126,9 @@ class DebuggerClassNameProvider(
         // In normal cases we only go from leaves to topmost parents upwards.
 
         if (element == null) return EMPTY
+        if (System.currentTimeMillis() - start > 5000) {
+            log.warn("Looking for ${element}, passed ${alreadyVisited.size}.")
+        }
 
         return when (element) {
             is KtScript -> {
