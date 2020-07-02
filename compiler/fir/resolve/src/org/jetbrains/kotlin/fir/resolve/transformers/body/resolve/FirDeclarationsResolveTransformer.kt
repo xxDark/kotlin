@@ -108,6 +108,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
             return property.compose()
         }
         return withTypeParametersOf(property) {
+            context.storeVariable(property)
             if (property.isLocal) {
                 prepareSignatureForBodyResolve(property)
                 property.transformStatus(this, property.resolveStatus(property.status).mode())
@@ -268,7 +269,6 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
             }
             variable.transformAccessors()
         }
-        context.storeVariable(variable)
         variable.replaceResolvePhase(transformerPhase)
         dataFlowAnalyzer.exitLocalVariableDeclaration(variable)
         return variable.compose()
@@ -592,6 +592,58 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
         }
     }
 
+
+    override fun transformScript(script: FirScript, data: ResolutionMode): CompositeTransformResult<FirStatement> {
+        if (script.resolvePhase == transformerPhase) return script.compose()
+        if (script.resolvePhase == FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE && transformerPhase == FirResolvePhase.BODY_RESOLVE) {
+            script.replaceResolvePhase(transformerPhase)
+            return script.compose()
+        }
+        val returnTypeRef = script.returnTypeRef
+        if ((returnTypeRef !is FirImplicitTypeRef) && implicitTypeOnly) {
+            return script.compose()
+        }
+
+        script.body?.statements?.forEach { statement ->
+            when (statement) {
+                is FirCallableDeclaration<*> -> {
+                    prepareCallableForBodyResolve(statement)
+                }
+                is FirClass<*> -> {
+                    statement.declarations.forEach { classDecl ->
+                        if (classDecl is FirCallableDeclaration<*>) {
+                            prepareCallableForBodyResolve(classDecl)
+                        }
+                    }
+                }
+            }
+        }
+
+        return withFullBodyResolve {
+            val receiverTypeRef = script.receiverTypeRef
+            if (receiverTypeRef != null) {
+                withLabelAndReceiverType(script.name, script, receiverTypeRef.coneType) {
+                    transformFunctionWithGivenSignature(script, ResolutionMode.ContextIndependent)
+                }
+            } else {
+                transformFunctionWithGivenSignature(script, ResolutionMode.ContextIndependent)
+            }
+        }
+    }
+
+    private fun prepareCallableForBodyResolve(callableDeclaration: FirCallableDeclaration<*>) {
+        callableDeclaration.transformReturnTypeRef(this, ResolutionMode.ContextIndependent)
+        callableDeclaration.transformReceiverTypeRef(this, ResolutionMode.ContextIndependent)
+        if (callableDeclaration is FirFunction<*>) {
+            callableDeclaration.valueParameters.forEach {
+                it.transformReturnTypeRef(this, ResolutionMode.ContextIndependent)
+                it.transformVarargTypeToArrayType()
+            }
+        }
+        if (callableDeclaration is FirProperty) {
+            callableDeclaration.transformStatus(this, callableDeclaration.resolveStatus(callableDeclaration.status, null, false).mode())
+        }
+    }
 
     override fun transformAnonymousInitializer(
         anonymousInitializer: FirAnonymousInitializer,

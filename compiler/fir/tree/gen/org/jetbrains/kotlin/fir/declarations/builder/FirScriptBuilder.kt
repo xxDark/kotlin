@@ -10,17 +10,21 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
 import org.jetbrains.kotlin.fir.builder.FirAnnotationContainerBuilder
 import org.jetbrains.kotlin.fir.builder.FirBuilderDsl
-import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirDeclarationAttributes
 import org.jetbrains.kotlin.fir.declarations.FirDeclarationOrigin
 import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
 import org.jetbrains.kotlin.fir.declarations.FirScript
+import org.jetbrains.kotlin.fir.declarations.FirTypeParameterRef
+import org.jetbrains.kotlin.fir.declarations.FirValueParameter
 import org.jetbrains.kotlin.fir.declarations.impl.FirScriptImpl
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
+import org.jetbrains.kotlin.fir.expressions.FirBlock
+import org.jetbrains.kotlin.fir.expressions.builder.FirExpressionBuilder
 import org.jetbrains.kotlin.fir.references.FirControlFlowGraphReference
 import org.jetbrains.kotlin.fir.references.impl.FirEmptyControlFlowGraphReference
 import org.jetbrains.kotlin.fir.symbols.impl.FirScriptSymbol
 import org.jetbrains.kotlin.fir.types.FirTypeRef
+import org.jetbrains.kotlin.fir.types.impl.FirImplicitTypeRefImpl
 import org.jetbrains.kotlin.fir.visitors.*
 import org.jetbrains.kotlin.name.Name
 
@@ -30,7 +34,7 @@ import org.jetbrains.kotlin.name.Name
  */
 
 @FirBuilderDsl
-class FirScriptBuilder : FirAnnotationContainerBuilder {
+class FirScriptBuilder : FirAnnotationContainerBuilder, FirExpressionBuilder {
     override var source: FirSourceElement? = null
     lateinit var session: FirSession
     var resolvePhase: FirResolvePhase = FirResolvePhase.RAW_FIR
@@ -38,8 +42,10 @@ class FirScriptBuilder : FirAnnotationContainerBuilder {
     override val annotations: MutableList<FirAnnotationCall> = mutableListOf()
     lateinit var returnTypeRef: FirTypeRef
     var receiverTypeRef: FirTypeRef? = null
+    val typeParameters: MutableList<FirTypeParameterRef> = mutableListOf()
+    val valueParameters: MutableList<FirValueParameter> = mutableListOf()
+    var body: FirBlock? = null
     lateinit var symbol: FirScriptSymbol
-    val declarations: MutableList<FirDeclaration> = mutableListOf()
     lateinit var name: Name
 
     override fun build(): FirScript {
@@ -51,12 +57,21 @@ class FirScriptBuilder : FirAnnotationContainerBuilder {
             annotations,
             returnTypeRef,
             receiverTypeRef,
+            typeParameters,
+            valueParameters,
+            body,
             symbol,
-            declarations,
             name,
         )
     }
 
+
+    @Deprecated("Modification of 'typeRef' has no impact for FirScriptBuilder", level = DeprecationLevel.HIDDEN)
+    override var typeRef: FirTypeRef
+        get() = throw IllegalStateException()
+        set(value) {
+            throw IllegalStateException()
+        }
 }
 
 @OptIn(ExperimentalContracts::class)

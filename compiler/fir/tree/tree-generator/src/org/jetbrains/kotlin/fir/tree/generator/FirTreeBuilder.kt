@@ -57,7 +57,7 @@ object FirTreeBuilder : AbstractFirTreeBuilder() {
     val propertyAccessor = element("PropertyAccessor", Declaration, function, contractDescriptionOwner, typeParametersOwner)
     val constructor = element("Constructor", Declaration, function, callableMemberDeclaration, typeParameterRefsOwner)
     val file = element("File", Declaration, annotatedDeclaration)
-    val script = element("Script", Declaration, annotatedDeclaration, callableDeclaration, controlFlowGraphOwner)
+    val script = element("Script", Declaration, annotatedDeclaration, function, expression)
 
     val anonymousFunction = element("AnonymousFunction", Declaration, function, expression, typeParametersOwner)
     val anonymousObject = element("AnonymousObject", Declaration, klass, controlFlowGraphOwner, expression)

@@ -48,7 +48,6 @@ import org.jetbrains.kotlin.types.Variance
 import org.jetbrains.kotlin.types.expressions.OperatorConventions
 import org.jetbrains.kotlin.util.OperatorNameConventions
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
-import java.util.*
 import org.jetbrains.kotlin.utils.addToStdlib.runIf
 
 class RawFirBuilder(
@@ -655,15 +654,13 @@ class RawFirBuilder(
                 origin = FirDeclarationOrigin.Source
                 name = script.fqName.shortName()
                 returnTypeRef = implicitUnitType
-                symbol = FirScriptSymbol(name)
-                for (declaration in script.declarations) {
-                    if (declaration is KtDestructuringDeclaration) {
-                        // TODO!
-                    } else {
-                        declarations += declaration.convert<FirDeclaration>()
-                    }
-                }
+                symbol = FirScriptSymbol(callableIdForName(name))
+                body = script.blockExpression.toFirBlock()
             }
+        }
+
+        override fun visitScriptInitializer(initializer: KtScriptInitializer, data: Unit?): FirElement {
+            return if (stubMode) buildEmptyExpressionBlock() else initializer.body.toFirBlock()
         }
 
         private fun KtEnumEntry.toFirEnumEntry(

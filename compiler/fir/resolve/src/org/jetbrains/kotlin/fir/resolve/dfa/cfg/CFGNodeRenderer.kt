@@ -127,6 +127,7 @@ private fun FirFunction<*>.name(): String = when (this) {
     is FirConstructor -> "<init>"
     is FirPropertyAccessor -> if (isGetter) "getter" else "setter"
     is FirErrorFunction -> "errorFunction"
+    is FirScript -> name.asString()
     else -> TODO(toString())
 }
 

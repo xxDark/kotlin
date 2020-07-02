@@ -1,4 +1,3 @@
-val (a, b, c) = A(<!NO_VALUE_FOR_PARAMETER!>)<!>
 
 class A(val a: Int) {
     operator fun component1() {}
@@ -6,3 +5,4 @@ class A(val a: Int) {
     operator fun component3() {}
 }
 
+val (a, b, c) = A(<!NO_VALUE_FOR_PARAMETER!>)<!>

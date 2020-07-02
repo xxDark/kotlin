@@ -5,10 +5,11 @@
 
 package org.jetbrains.kotlin.fir.declarations
 
-import org.jetbrains.kotlin.fir.FirPureAbstractElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
+import org.jetbrains.kotlin.fir.expressions.FirBlock
+import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.references.FirControlFlowGraphReference
 import org.jetbrains.kotlin.fir.symbols.impl.FirScriptSymbol
 import org.jetbrains.kotlin.fir.types.FirTypeRef
@@ -20,7 +21,7 @@ import org.jetbrains.kotlin.fir.visitors.*
  * DO NOT MODIFY IT MANUALLY
  */
 
-abstract class FirScript : FirPureAbstractElement(), FirAnnotatedDeclaration, FirCallableDeclaration<FirScript>, FirControlFlowGraphOwner {
+abstract class FirScript : FirAnnotatedDeclaration, FirFunction<FirScript>, FirExpression() {
     abstract override val source: FirSourceElement?
     abstract override val session: FirSession
     abstract override val resolvePhase: FirResolvePhase
@@ -29,9 +30,12 @@ abstract class FirScript : FirPureAbstractElement(), FirAnnotatedDeclaration, Fi
     abstract override val annotations: List<FirAnnotationCall>
     abstract override val returnTypeRef: FirTypeRef
     abstract override val receiverTypeRef: FirTypeRef?
+    abstract override val typeParameters: List<FirTypeParameterRef>
     abstract override val controlFlowGraphReference: FirControlFlowGraphReference
+    abstract override val valueParameters: List<FirValueParameter>
+    abstract override val body: FirBlock?
+    abstract override val typeRef: FirTypeRef
     abstract override val symbol: FirScriptSymbol
-    abstract val declarations: List<FirDeclaration>
     abstract val name: Name
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R = visitor.visitScript(this, data)
@@ -42,6 +46,10 @@ abstract class FirScript : FirPureAbstractElement(), FirAnnotatedDeclaration, Fi
 
     abstract override fun replaceReceiverTypeRef(newReceiverTypeRef: FirTypeRef?)
 
+    abstract override fun replaceValueParameters(newValueParameters: List<FirValueParameter>)
+
+    abstract override fun replaceTypeRef(newTypeRef: FirTypeRef)
+
     abstract override fun <D> transformAnnotations(transformer: FirTransformer<D>, data: D): FirScript
 
     abstract override fun <D> transformReturnTypeRef(transformer: FirTransformer<D>, data: D): FirScript
@@ -50,5 +58,7 @@ abstract class FirScript : FirPureAbstractElement(), FirAnnotatedDeclaration, Fi
 
     abstract override fun <D> transformControlFlowGraphReference(transformer: FirTransformer<D>, data: D): FirScript
 
-    abstract fun <D> transformDeclarations(transformer: FirTransformer<D>, data: D): FirScript
+    abstract override fun <D> transformValueParameters(transformer: FirTransformer<D>, data: D): FirScript
+
+    abstract override fun <D> transformBody(transformer: FirTransformer<D>, data: D): FirScript
 }

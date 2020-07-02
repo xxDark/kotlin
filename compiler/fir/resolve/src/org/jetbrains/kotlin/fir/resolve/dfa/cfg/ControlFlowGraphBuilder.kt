@@ -166,6 +166,7 @@ class ControlFlowGraphBuilder {
             is FirSimpleFunction -> function.name.asString()
             is FirPropertyAccessor -> if (function.isGetter) "<getter>" else "<setter>"
             is FirConstructor -> "<init>"
+            is FirScript -> function.name.asString()
             else -> throw IllegalArgumentException("Unknown function: ${function.render()}")
         }
         val graph = ControlFlowGraph(function, name, ControlFlowGraph.Kind.Function)

@@ -11,9 +11,12 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirConstructor
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
 import org.jetbrains.kotlin.fir.declarations.collectEnumEntries
-import org.jetbrains.kotlin.fir.diagnostics.DiagnosticKind
 import org.jetbrains.kotlin.fir.diagnostics.ConeSimpleDiagnostic
-import org.jetbrains.kotlin.fir.expressions.*
+import org.jetbrains.kotlin.fir.diagnostics.DiagnosticKind
+import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
+import org.jetbrains.kotlin.fir.expressions.FirConstKind
+import org.jetbrains.kotlin.fir.expressions.FirExpression
+import org.jetbrains.kotlin.fir.expressions.buildUnaryArgumentList
 import org.jetbrains.kotlin.fir.expressions.builder.*
 import org.jetbrains.kotlin.fir.references.builder.buildErrorNamedReference
 import org.jetbrains.kotlin.fir.references.builder.buildResolvedNamedReference
@@ -194,7 +197,9 @@ abstract class AbstractAnnotationDeserializer(
                 buildResolvedTypeRef {
                     type = it.constructType(emptyList(), isNullable = false)
                 }
-            } ?: buildErrorTypeRef { diagnostic = ConeUnresolvedSymbolError(classId) }
+            } ?: buildErrorTypeRef {
+                diagnostic = ConeUnresolvedSymbolError(classId)
+            }
             argumentList = buildArgumentList {
                 this.arguments += arguments
             }

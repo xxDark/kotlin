@@ -254,6 +254,10 @@ open class FirBodyResolveTransformer(
         return declarationsTransformer.transformFunction(function, data)
     }
 
+    override fun transformScript(script: FirScript, data: ResolutionMode): CompositeTransformResult<FirStatement> {
+        return declarationsTransformer.transformScript(script, data)
+    }
+
     override fun transformConstructor(constructor: FirConstructor, data: ResolutionMode): CompositeTransformResult<FirDeclaration> {
         return declarationsTransformer.transformConstructor(constructor, data)
     }

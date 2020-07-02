@@ -1,5 +1,4 @@
 // !WITH_NEW_INFERENCE
-// FIR_IDENTICAL
 // documents inconsistency between scripts and classes, see DeclarationScopeProviderImpl
 
 fun function() = 42

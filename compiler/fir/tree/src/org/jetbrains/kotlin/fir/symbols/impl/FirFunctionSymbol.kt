@@ -52,3 +52,7 @@ class FirAnonymousFunctionSymbol : FirFunctionWithoutNameSymbol<FirAnonymousFunc
 class FirPropertyAccessorSymbol : FirFunctionWithoutNameSymbol<FirPropertyAccessor>(Name.identifier("accessor"))
 
 class FirErrorFunctionSymbol : FirFunctionWithoutNameSymbol<FirErrorFunction>(Name.identifier("error"))
+
+// ------------------------ script ------------------------
+
+class FirScriptSymbol(override val callableId: CallableId) : FirFunctionSymbol<FirScript>(callableId)

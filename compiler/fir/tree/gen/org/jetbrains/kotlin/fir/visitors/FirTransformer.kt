@@ -302,7 +302,7 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformElement(file, data)
     }
 
-    open fun transformScript(script: FirScript, data: D): CompositeTransformResult<FirDeclaration> {
+    open fun transformScript(script: FirScript, data: D): CompositeTransformResult<FirStatement> {
         return transformElement(script, data)
     }
 
@@ -806,7 +806,7 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformFile(file, data)
     }
 
-    final override fun visitScript(script: FirScript, data: D): CompositeTransformResult<FirDeclaration> {
+    final override fun visitScript(script: FirScript, data: D): CompositeTransformResult<FirStatement> {
         return transformScript(script, data)
     }
 
