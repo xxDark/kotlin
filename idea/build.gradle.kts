@@ -3,6 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     kotlin("jvm")
     id("jps-compatible")
+    id("com.gradle.enterprise.test-distribution") version "1.0.2"
 }
 
 val kotlinVersion: String by rootProject.extra
@@ -197,6 +198,8 @@ dependencies {
     if (Ide.AS41.orHigher()) {
         testRuntime(intellijPluginDep("platform-images"))
     }
+
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
 }
 
 tasks.named<Copy>("processResources") {
@@ -219,6 +222,27 @@ tasks.named<Copy>("processResources") {
 projectTest(parallel = true) {
     dependsOn(":dist")
     workingDir = rootDir
+
+    inputs.dir(rootDir.resolve("dist"))
+
+    inputs.dir(rootDir.resolve("compiler/cli/cli-common/resources")) // compiler.xml
+
+    inputs.dir(rootDir.resolve("compiler/testData/mockJDK"))
+    inputs.dir(rootDir.resolve("compiler/testData/mockJDK9"))
+    inputs.dir(rootDir.resolve("compiler/testData/mockJDKModified"))
+
+    inputs.dir(rootDir.resolve("compiler/testData/asJava"))
+    inputs.dir(rootDir.resolve("compiler/testData/loadJava"))
+
+    inputs.dir(projectDir.resolve("testData"))
+    inputs.dir(projectDir.resolve("idea-completion/testData"))
+    inputs.dir(projectDir.resolve("idea-live-templates/testData"))
+
+    useJUnitPlatform()
+    distribution {
+        enabled.set(true)
+        maxRemoteExecutors.set(8)
+    }
 }
 
 configureFormInstrumentation()
