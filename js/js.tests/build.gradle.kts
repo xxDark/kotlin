@@ -10,6 +10,7 @@ plugins {
     id("jps-compatible")
     id("com.github.node-gradle.node") version "2.2.0"
     id("de.undercouch.download")
+    id("com.gradle.enterprise.test-distribution") version "1.0.2"
 }
 
 node {
@@ -80,7 +81,7 @@ dependencies {
     }
 
     testCompileOnly("com.eclipsesource.j2v8:j2v8_linux_x86_64:4.8.0")
-    testRuntimeOnly(j2v8idString)
+    testRuntimeOnly("com.eclipsesource.j2v8:j2v8_linux_x86_64:4.8.0")
 
     testRuntime(kotlinStdlib())
     testJsRuntime(kotlinStdlib("js"))
@@ -94,6 +95,8 @@ dependencies {
     
     antLauncherJar(commonDep("org.apache.ant", "ant"))
     antLauncherJar(toolsJar())
+
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
 }
 
 sourceSets {
@@ -104,14 +107,22 @@ sourceSets {
 
 fun Test.setUpJsBoxTests(jsEnabled: Boolean, jsIrEnabled: Boolean) {
     dependsOn(":dist")
-    if (jsEnabled) dependsOn(testJsRuntime)
+    if (jsEnabled) {
+        dependsOn(testJsRuntime)
+        inputs.files(testJsRuntime)
+    }
     if (jsIrEnabled) {
         dependsOn(":kotlin-stdlib-js-ir:compileKotlinJs")
         systemProperty("kotlin.js.full.stdlib.path", "libraries/stdlib/js-ir/build/classes/kotlin/js/main")
+        inputs.dir(rootDir.resolve("libraries/stdlib/js-ir/build/classes/kotlin/js/main"))
+
         dependsOn(":kotlin-stdlib-js-ir-minimal-for-test:compileKotlinJs")
         systemProperty("kotlin.js.reduced.stdlib.path", "libraries/stdlib/js-ir-minimal-for-test/build/classes/kotlin/js/main")
+        inputs.dir(rootDir.resolve("libraries/stdlib/js-ir-minimal-for-test/build/classes/kotlin/js/main"))
+
         dependsOn(":kotlin-test:kotlin-test-js-ir:compileKotlinJs")
         systemProperty("kotlin.js.kotlin.test.path", "libraries/kotlin.test/js-ir/build/classes/kotlin/js/main")
+        inputs.dir(rootDir.resolve("libraries/kotlin.test/js-ir/build/classes/kotlin/js/main"))
     }
 
     exclude("org/jetbrains/kotlin/js/test/wasm/semantics/*")
@@ -126,6 +137,8 @@ fun Test.setUpJsBoxTests(jsEnabled: Boolean, jsIrEnabled: Boolean) {
 
 fun Test.setUpBoxTests() {
     workingDir = rootDir
+    dependsOn(antLauncherJar)
+    inputs.files(antLauncherJar)
     doFirst {
         systemProperty("kotlin.ant.classpath", antLauncherJar.asPath)
         systemProperty("kotlin.ant.launcher.class", "org.apache.tools.ant.Main")
@@ -141,8 +154,24 @@ fun Test.setUpBoxTests() {
     }
 }
 
+val testDataDir = project(":js:js.translator").projectDir.resolve("testData")
+
 projectTest(parallel = true) {
     setUpJsBoxTests(jsEnabled = true, jsIrEnabled = true)
+
+    inputs.dir(rootDir.resolve("compiler/cli/cli-common/resources")) // compiler.xml
+
+    inputs.dir(testDataDir)
+    inputs.dir(rootDir.resolve("dist"))
+    inputs.dir(rootDir.resolve("compiler/testData"))
+    inputs.dir(rootDir.resolve("libraries/stdlib/api/js"))
+    inputs.dir(rootDir.resolve("libraries/stdlib/api/js-v1"))
+
+    useJUnitPlatform()
+    distribution {
+        enabled.set(true)
+        maxRemoteExecutors.set(16)
+    }
 }
 
 projectTest("jsTest", true) {
@@ -189,7 +218,6 @@ projectTest("quickTest", true) {
 testsJar {}
 
 val generateTests by generator("org.jetbrains.kotlin.generators.tests.GenerateJsTestsKt")
-val testDataDir = project(":js:js.translator").projectDir.resolve("testData")
 
 extensions.getByType(NodeExtension::class.java).nodeModulesDir = testDataDir
 
