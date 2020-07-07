@@ -647,8 +647,11 @@ class RawFirBuilder(
         }
 
         override fun visitScript(script: KtScript, data: Unit?): FirElement {
+            val target = FirFunctionTarget(script.name, isLambda = false)
             context.packageFqName = script.containingKtFile.packageFqName
-            return buildScript {
+            context.firFunctionTargets += target
+            context.localBits.add(true)
+            return FirScriptBuilder().apply {
                 source = script.toFirSourceElement()
                 session = baseSession
                 origin = FirDeclarationOrigin.Source
@@ -656,6 +659,10 @@ class RawFirBuilder(
                 returnTypeRef = implicitUnitType
                 symbol = FirScriptSymbol(callableIdForName(name))
                 body = script.blockExpression.toFirBlock()
+                context.localBits.removeLast()
+                context.firFunctionTargets.removeLast()
+            }.build().also {
+                target.bind(it)
             }
         }
 
@@ -729,7 +736,9 @@ class RawFirBuilder(
         override fun visitClassOrObject(classOrObject: KtClassOrObject, data: Unit): FirElement {
             return withChildClassName(
                 classOrObject.nameAsSafeName,
-                classOrObject.isLocal || classOrObject.getStrictParentOfType<KtEnumEntry>() != null
+                classOrObject.isLocal
+                        || classOrObject.getStrictParentOfType<KtEnumEntry>() != null
+                        || classOrObject.getStrictParentOfType<KtScript>() != null
             ) {
                 val classKind = when (classOrObject) {
                     is KtObjectDeclaration -> ClassKind.OBJECT
