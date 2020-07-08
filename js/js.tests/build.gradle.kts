@@ -219,14 +219,21 @@ testsJar {}
 
 val generateTests by generator("org.jetbrains.kotlin.generators.tests.GenerateJsTestsKt")
 
-extensions.getByType(NodeExtension::class.java).nodeModulesDir = testDataDir
+val nodeDir = buildDir.resolve("node")
+extensions.getByType(NodeExtension::class.java).nodeModulesDir = nodeDir
+
+val packageJson by tasks.registering(Copy::class) {
+    from(rootDir.resolve("js/js.translator/testData/package.json"))
+    into(nodeDir)
+}
 
 val npmInstall by tasks.getting(NpmTask::class) {
-    setWorkingDir(testDataDir)
+    dependsOn(packageJson)
+    setWorkingDir(nodeDir)
 }
 
 val runMocha by task<NpmTask> {
-    setWorkingDir(testDataDir)
+    setWorkingDir(nodeDir)
 
     val target = if (project.hasProperty("teamcity")) "runOnTeamcity" else "test"
     setArgs(listOf("run", target))
