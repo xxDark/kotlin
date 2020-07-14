@@ -17,10 +17,10 @@ import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.builder.buildReturnExpression
 import org.jetbrains.kotlin.fir.expressions.builder.buildUnitExpression
 import org.jetbrains.kotlin.fir.references.FirResolvedNamedReference
-import org.jetbrains.kotlin.fir.references.impl.FirEmptyControlFlowGraphReference
 import org.jetbrains.kotlin.fir.resolve.*
 import org.jetbrains.kotlin.fir.resolve.calls.FirNamedReferenceWithCandidate
 import org.jetbrains.kotlin.fir.resolve.calls.ImplicitExtensionReceiverValue
+import org.jetbrains.kotlin.fir.resolve.dfa.FirControlFlowGraphReferenceImpl
 import org.jetbrains.kotlin.fir.resolve.inference.FirDelegatedPropertyInferenceSession
 import org.jetbrains.kotlin.fir.resolve.inference.extractLambdaInfoFromFunctionalType
 import org.jetbrains.kotlin.fir.resolve.substitution.ConeSubstitutor
@@ -148,7 +148,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
                     }
                     property.replaceResolvePhase(transformerPhase)
                     dataFlowAnalyzer.exitProperty(property)?.let {
-                        property.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, it)
+                        property.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(it))
                     }
                     property.compose()
                 }
@@ -374,7 +374,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
         if (notAnalyzed) {
             if (!implicitTypeOnly) {
                 val controlFlowGraph = dataFlowAnalyzer.exitRegularClass(result)
-                result.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, controlFlowGraph)
+                result.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(controlFlowGraph))
             } else {
                 dataFlowAnalyzer.exitClass()
             }
@@ -400,12 +400,12 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
                 this.type = type
             }
         }
-        var result = withScopesForClass(null, anonymousObject, type) {
+        val result = withScopesForClass(null, anonymousObject, type) {
             transformDeclarationContent(anonymousObject, data).single as FirAnonymousObject
         }
-        if (!implicitTypeOnly && result.controlFlowGraphReference == FirEmptyControlFlowGraphReference) {
+        if (!implicitTypeOnly && result.controlFlowGraphReference == null) {
             val graph = dataFlowAnalyzer.exitAnonymousObject(result)
-            result = result.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, graph)
+            result.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(graph))
         } else {
             dataFlowAnalyzer.exitClass()
         }
@@ -515,7 +515,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
                 if (functionIsNotAnalyzed) {
                     val result = it.single as FirFunction<*>
                     val controlFlowGraph = dataFlowAnalyzer.exitFunction(result)
-                    result.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, controlFlowGraph)
+                    result.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(controlFlowGraph))
                 }
             } as CompositeTransformResult<FirStatement>
         }
@@ -587,7 +587,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
             }
 
             val graph = dataFlowAnalyzer.exitFunction(constructor)
-            constructor.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, graph)
+            constructor.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(graph))
             constructor.compose()
         }
     }
@@ -605,7 +605,8 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
             val result =
                 transformDeclarationContent(anonymousInitializer, ResolutionMode.ContextIndependent).single as FirAnonymousInitializer
             val graph = dataFlowAnalyzer.exitInitBlock(result)
-            result.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, graph).compose()
+            result.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(graph))
+            result.compose()
         }
     }
 
@@ -626,7 +627,7 @@ open class FirDeclarationsResolveTransformer(transformer: FirBodyResolveTransfor
         ).single as FirValueParameter
 
         dataFlowAnalyzer.exitValueParameter(result)?.let { graph ->
-            result.transformControlFlowGraphReference(ControlFlowGraphReferenceTransformer, graph)
+            result.replaceControlFlowGraphReference(FirControlFlowGraphReferenceImpl(graph))
         }
 
         return result.compose()

@@ -126,7 +126,7 @@ interface ExitNodeMarker
 
 sealed class CFGNodeWithCfgOwner<out E : FirControlFlowGraphOwner>(owner: ControlFlowGraph, level: Int, id: Int) : CFGNode<E>(owner, level, id) {
     val subGraph: ControlFlowGraph?
-        get() = fir.controlFlowGraphReference.controlFlowGraph
+        get() = fir.controlFlowGraphReference?.controlFlowGraph
 }
 
 // ----------------------------------- Named function -----------------------------------

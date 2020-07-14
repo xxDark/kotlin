@@ -19,7 +19,6 @@ import org.jetbrains.kotlin.fir.declarations.impl.FirDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.java.JavaTypeParameterStack
 import org.jetbrains.kotlin.fir.references.FirControlFlowGraphReference
-import org.jetbrains.kotlin.fir.references.impl.FirEmptyControlFlowGraphReference
 import org.jetbrains.kotlin.fir.scopes.FirScopeProvider
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 import org.jetbrains.kotlin.fir.types.FirTypeRef
@@ -48,7 +47,7 @@ class FirJavaClass @FirImplementationDetail internal constructor(
     internal val existingNestedClassifierNames: List<Name>
 ) : FirRegularClass() {
     override val hasLazyNestedClassifiers: Boolean get() = true
-    override val controlFlowGraphReference: FirControlFlowGraphReference get() = FirEmptyControlFlowGraphReference
+    override val controlFlowGraphReference: FirControlFlowGraphReference? get() = null
 
     init {
         symbol.bind(this)
@@ -70,6 +69,8 @@ class FirJavaClass @FirImplementationDetail internal constructor(
     override fun replaceResolvePhase(newResolvePhase: FirResolvePhase) {
         resolvePhase = newResolvePhase
     }
+
+    override fun replaceControlFlowGraphReference(newControlFlowGraphReference: FirControlFlowGraphReference?) {}
 
     override fun <R, D> acceptChildren(visitor: FirVisitor<R, D>, data: D) {
         declarations.forEach { it.accept(visitor, data) }
@@ -95,10 +96,6 @@ class FirJavaClass @FirImplementationDetail internal constructor(
 
     override fun <D> transformStatus(transformer: FirTransformer<D>, data: D): FirJavaClass {
         status = status.transformSingle(transformer, data)
-        return this
-    }
-
-    override fun <D> transformControlFlowGraphReference(transformer: FirTransformer<D>, data: D): FirRegularClass {
         return this
     }
 
