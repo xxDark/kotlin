@@ -37,6 +37,8 @@ import org.jetbrains.kotlin.serialization.deserialization.descriptors.Descriptor
 interface ReferenceSymbolTable {
     fun referenceClass(descriptor: ClassDescriptor): IrClassSymbol
 
+    fun referenceScript(descriptor: ScriptDescriptor): IrScriptSymbol
+
     fun referenceConstructor(descriptor: ClassConstructorDescriptor): IrConstructorSymbol
 
     fun referenceEnumEntry(descriptor: ClassDescriptor): IrEnumEntrySymbol
@@ -394,12 +396,19 @@ open class SymbolTable(
         )
     }
 
-    fun referenceScript(descriptor: ScriptDescriptor): IrScriptSymbol {
+    override fun referenceScript(descriptor: ScriptDescriptor): IrScriptSymbol {
         return scriptSymbolTable.referenced(descriptor) { IrScriptSymbolImpl(descriptor) }
     }
+//
+//    override fun referenceScript(descriptor: ScriptDescriptor) =
+//        scriptSymbolTable.referenced(descriptor) { createScriptSymbol(descriptor) }
 
     private fun createClassSymbol(descriptor: ClassDescriptor): IrClassSymbol {
         return signaturer.composeSignature(descriptor)?.let { IrClassPublicSymbolImpl(descriptor, it) } ?: IrClassSymbolImpl(descriptor)
+    }
+
+    private fun createScriptSymbol(descriptor: ScriptDescriptor): IrScriptSymbol {
+        return signaturer.composeSignature(descriptor)?.let { IrScriptPublicSymbolImpl(descriptor, it) } ?: IrScriptSymbolImpl(descriptor)
     }
 
     fun declareClass(

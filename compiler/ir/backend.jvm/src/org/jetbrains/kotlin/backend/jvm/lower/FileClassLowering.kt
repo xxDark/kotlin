@@ -49,7 +49,7 @@ internal val fileClassPhase = makeIrModulePhase(
     stickyPostconditions = setOf(::checkAllFileLevelDeclarationsAreClasses)
 )
 
-private fun checkAllFileLevelDeclarationsAreClasses(irModuleFragment: IrModuleFragment) {
+internal fun checkAllFileLevelDeclarationsAreClasses(irModuleFragment: IrModuleFragment) {
     assert(irModuleFragment.files.all { irFile ->
         irFile.declarations.all { it is IrClass }
     })
@@ -61,10 +61,11 @@ private class FileClassLowering(val context: JvmBackendContext) : FileLoweringPa
         val fileClassMembers = ArrayList<IrDeclaration>()
 
         irFile.declarations.forEach {
-            if (it is IrClass)
-                classes.add(it)
-            else
-                fileClassMembers.add(it)
+            when (it) {
+                is IrScript -> {}
+                is IrClass -> classes.add(it)
+                else -> fileClassMembers.add(it)
+            }
         }
 
         if (fileClassMembers.isEmpty() && (irFile.metadata as? MetadataSource.File)?.descriptors.isNullOrEmpty()) return

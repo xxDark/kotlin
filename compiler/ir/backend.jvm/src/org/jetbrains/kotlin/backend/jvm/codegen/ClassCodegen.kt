@@ -122,6 +122,7 @@ abstract class ClassCodegen protected constructor(
                 is IrClass, classInitializer -> Unit // see below
                 is IrField -> generateField(declaration)
                 is IrFunction -> generateMethod(declaration, smap)
+                is IrScript -> Unit
                 else -> throw AssertionError("unexpected class member $declaration at codegen")
             }
         }

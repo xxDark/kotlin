@@ -8,10 +8,7 @@ package org.jetbrains.kotlin.ir.util
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.LanguageVersionSettings
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
-import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.annotations.Annotations
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.IrTypeParametersContainer
@@ -118,6 +115,9 @@ class TypeTranslator(
                     annotations = translateTypeAnnotations(approximatedType.annotations)
                 }
 
+                is ScriptDescriptor -> {
+                    classifier = symbolTable.referenceScript(ktTypeDescriptor)
+                }
                 is ClassDescriptor -> {
                     classifier = symbolTable.referenceClass(ktTypeDescriptor)
                     arguments = translateTypeArguments(approximatedType.arguments)

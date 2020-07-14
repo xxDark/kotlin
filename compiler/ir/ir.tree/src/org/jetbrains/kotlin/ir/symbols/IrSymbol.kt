@@ -19,7 +19,6 @@ package org.jetbrains.kotlin.ir.symbols
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
-import org.jetbrains.kotlin.ir.declarations.IrScript
 import org.jetbrains.kotlin.ir.expressions.IrReturnableBlock
 import org.jetbrains.kotlin.ir.util.IdSignature
 import org.jetbrains.kotlin.ir.util.IrSymbolVisitor
@@ -111,7 +110,7 @@ interface IrClassSymbol :
 }
 
 interface IrScriptSymbol :
-    IrSymbol, IrBindableSymbol<ScriptDescriptor, IrScript> {
+    IrClassifierSymbol, IrBindableSymbol<ScriptDescriptor, IrScript> {
 
     override fun <D, R> accept(visitor: IrSymbolVisitor<R, D>, data: D): R =
         visitor.visitSymbol(this, data)
