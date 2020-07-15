@@ -47,6 +47,8 @@ infix fun SearchScope.or(otherScope: SearchScope): SearchScope = union(otherScop
 infix fun GlobalSearchScope.or(otherScope: SearchScope): GlobalSearchScope = union(otherScope)
 operator fun SearchScope.minus(otherScope: GlobalSearchScope): SearchScope = this and !otherScope
 operator fun GlobalSearchScope.not(): GlobalSearchScope = GlobalSearchScope.notScope(this)
+operator fun GlobalSearchScope.minus(otherScope: GlobalSearchScope): GlobalSearchScope = this and !otherScope
+infix fun GlobalSearchScope.and(otherScope: GlobalSearchScope): GlobalSearchScope = intersectWith(otherScope)
 
 fun SearchScope.unionSafe(other: SearchScope): SearchScope {
     if (this is LocalSearchScope && this.scope.isEmpty()) {

@@ -22,6 +22,7 @@ class KotlinDebuggerSettings : XDebuggerSettings<KotlinDebuggerSettings>("kotlin
     var renderDelegatedProperties: Boolean = false
     var disableKotlinInternalClasses: Boolean = true
     var debugDisableCoroutineAgent: Boolean = false
+    var debugDisableGradleInlineCalls: Boolean = false
 
     companion object {
         fun getInstance(): KotlinDebuggerSettings {

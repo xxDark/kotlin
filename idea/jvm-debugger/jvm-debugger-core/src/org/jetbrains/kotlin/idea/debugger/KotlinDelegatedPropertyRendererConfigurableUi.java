@@ -25,6 +25,7 @@ import javax.swing.*;
 public class KotlinDelegatedPropertyRendererConfigurableUi implements ConfigurableUi<KotlinDebuggerSettings> {
     private JCheckBox renderDelegatedProperties;
     private JCheckBox disableCoroutineAgent;
+    private JCheckBox disableInlineDebuggerOptimization;
     private JPanel myPanel;
 
     @Override
@@ -32,18 +33,21 @@ public class KotlinDelegatedPropertyRendererConfigurableUi implements Configurab
         boolean flag = settings.getRenderDelegatedProperties();
         renderDelegatedProperties.setSelected(flag);
         disableCoroutineAgent.setSelected(settings.getDebugDisableCoroutineAgent());
+        disableInlineDebuggerOptimization.setSelected(settings.getDebugDisableGradleInlineCalls());
     }
 
     @Override
     public boolean isModified(@NotNull KotlinDebuggerSettings settings) {
         return settings.getRenderDelegatedProperties() != renderDelegatedProperties.isSelected()
-               || settings.getDebugDisableCoroutineAgent() != disableCoroutineAgent.isSelected();
+               || settings.getDebugDisableCoroutineAgent() != disableCoroutineAgent.isSelected()
+               || settings.getDebugDisableGradleInlineCalls() != disableInlineDebuggerOptimization.isSelected();
     }
 
     @Override
     public void apply(@NotNull KotlinDebuggerSettings settings) {
         settings.setRenderDelegatedProperties(renderDelegatedProperties.isSelected());
         settings.setDebugDisableCoroutineAgent(disableCoroutineAgent.isSelected());
+        settings.setDebugDisableGradleInlineCalls(disableInlineDebuggerOptimization.isSelected());
     }
 
     @NotNull

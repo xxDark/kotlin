@@ -14,6 +14,7 @@
         <projectResolve implementation="org.jetbrains.kotlin.idea.cocoapods.KotlinCocoaPodsModelResolver" order="last"/>
         <projectResolve implementation="org.jetbrains.kotlin.idea.configuration.KotlinGradleProjectResolverExtension" order="first"/>
         <projectResolve implementation="org.jetbrains.kotlin.idea.configuration.KotlinGradleCoroutineDebugProjectResolver" order="last"/>
+        <projectResolve implementation="org.jetbrains.kotlin.idea.configuration.KotlinGradleModuleForInlineResolverExtension" order="last"/>
         <projectResolve implementation="org.jetbrains.kotlin.kapt.idea.KaptProjectResolverExtension" order="last"/>
         <projectResolve implementation="org.jetbrains.kotlin.allopen.ide.AllOpenProjectResolverExtension" order="last"/>
         <projectResolve implementation="org.jetbrains.kotlin.noarg.ide.NoArgProjectResolverExtension" order="last"/>
