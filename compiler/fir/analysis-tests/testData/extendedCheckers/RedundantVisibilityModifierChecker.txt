@@ -97,7 +97,7 @@ FILE: RedundantVisibilityModifierChecker.kt
             public get(): R|kotlin/Int|
 
         public final static enum entry FIRST: R|F| = object : R|F| {
-            private[local] constructor(): R|<anonymous>| {
+            private constructor(): R|<anonymous>| {
                 super<R|F|>(Int(42))
             }
 
