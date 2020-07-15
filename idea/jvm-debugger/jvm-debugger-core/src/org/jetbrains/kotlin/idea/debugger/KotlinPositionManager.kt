@@ -14,11 +14,15 @@ import com.intellij.debugger.engine.PositionManagerEx
 import com.intellij.debugger.engine.evaluation.EvaluationContext
 import com.intellij.debugger.impl.DebuggerUtilsEx
 import com.intellij.debugger.jdi.StackFrameProxyImpl
+import com.intellij.debugger.jdi.VirtualMachineProxyImpl
 import com.intellij.debugger.requests.ClassPrepareRequestor
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Computable
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiFile
@@ -27,11 +31,9 @@ import com.intellij.psi.impl.compiled.ClsFileImpl
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ThreeState
+import com.intellij.workspace.api.toVirtualFileUrl
 import com.intellij.xdebugger.frame.XStackFrame
-import com.sun.jdi.AbsentInformationException
-import com.sun.jdi.Location
-import com.sun.jdi.ObjectCollectedException
-import com.sun.jdi.ReferenceType
+import com.sun.jdi.*
 import com.sun.jdi.request.ClassPrepareRequest
 import org.jetbrains.kotlin.codegen.inline.KOTLIN_STRATA_NAME
 import org.jetbrains.kotlin.fileClasses.JvmFileClassUtil
@@ -51,10 +53,17 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.resolve.inline.InlineUtil
 import org.jetbrains.kotlin.resolve.jvm.JvmClassName
+import java.nio.file.Paths
 import java.util.ArrayList
+import kotlin.Comparator
 
 class KotlinPositionManager(private val myDebugProcess: DebugProcess) : MultiRequestPositionManager, PositionManagerEx() {
     private val stackFrameInterceptor: StackFrameInterceptor = myDebugProcess.project.getService()
+    private val searchScope: GlobalSearchScope
+
+    init {
+        searchScope = determineSearchScope()
+    }
 
     private val allKotlinFilesScope = object : DelegatingGlobalSearchScope(
         KotlinSourceFilterScope.projectAndLibrariesSources(GlobalSearchScope.allScope(myDebugProcess.project), myDebugProcess.project)
@@ -224,7 +233,7 @@ class KotlinPositionManager(private val myDebugProcess: DebugProcess) : MultiReq
 
             val internalClassNames = DebuggerClassNameProvider(
                 myDebugProcess.project,
-                myDebugProcess.searchScope,
+                searchScope,
                 alwaysReturnLambdaParentClass = false
             ).getOuterClassNamesForElement(literal.firstChild, emptySet()).classNames
 
@@ -286,7 +295,10 @@ class KotlinPositionManager(private val myDebugProcess: DebugProcess) : MultiReq
     }
 
     private fun getReferenceTypesForPositionInKtFile(sourcePosition: SourcePosition): List<ReferenceType> {
-        val debuggerClassNameProvider = DebuggerClassNameProvider(myDebugProcess.project, myDebugProcess.searchScope)
+        val debuggerClassNameProvider = DebuggerClassNameProvider(
+            myDebugProcess.project,
+            searchScope
+        )
         val lineNumber = runReadAction { sourcePosition.line }
         val classes = debuggerClassNameProvider.getClassesForPosition(sourcePosition)
         return classes.flatMap { className -> myDebugProcess.virtualMachineProxy.classesByName(className) }
@@ -294,7 +306,11 @@ class KotlinPositionManager(private val myDebugProcess: DebugProcess) : MultiReq
     }
 
     fun originalClassNamesForPosition(position: SourcePosition): List<String> {
-        val debuggerClassNameProvider = DebuggerClassNameProvider(myDebugProcess.project, myDebugProcess.searchScope, findInlineUseSites = false)
+        val debuggerClassNameProvider = DebuggerClassNameProvider(
+            myDebugProcess.project,
+            searchScope,
+            findInlineUseSites = false
+        )
         return debuggerClassNameProvider.getOuterClassNamesForPosition(position)
     }
 
@@ -333,17 +349,42 @@ class KotlinPositionManager(private val myDebugProcess: DebugProcess) : MultiReq
             throw NoDataException.INSTANCE
         }
 
-        return DumbService.getInstance(myDebugProcess.project).runReadActionInSmartMode(Computable {
-            val classNames =
-                DebuggerClassNameProvider(myDebugProcess.project, myDebugProcess.searchScope).getOuterClassNamesForPosition(position)
-            classNames.flatMap { name ->
-                listOfNotNull(
-                    myDebugProcess.requestsManager.createClassPrepareRequest(requestor, name),
-                    myDebugProcess.requestsManager.createClassPrepareRequest(requestor, "$name$*")
-                )
-            }
+        val classNames = DumbService.getInstance(myDebugProcess.project).runReadActionInSmartMode(Computable {
+            DebuggerClassNameProvider(
+                myDebugProcess.project,
+                searchScope
+            ).getOuterClassNamesForPosition(
+                position
+            )
         })
+        return classNames.flatMap { name ->
+            listOfNotNull(
+                myDebugProcess.requestsManager.createClassPrepareRequest(requestor, name),
+                myDebugProcess.requestsManager.createClassPrepareRequest(requestor, "$name$*")
+            )
+        }
     }
+
+    private fun determineSearchScope(): GlobalSearchScope {
+        if (KotlinDebuggerSettings.getInstance().debugDisableGradleInlineCalls)
+            return myDebugProcess.searchScope
+
+        val vmProxy = myDebugProcess.virtualMachineProxy
+        if (vmProxy is VirtualMachineProxyImpl) {
+            val vm = vmProxy.virtualMachine
+            if (vm is PathSearchingVirtualMachine) {
+                val baseDirectory = vm.baseDirectory()
+                return findModuleByPath(myDebugProcess.project, baseDirectory) ?: myDebugProcess.searchScope
+            }
+        }
+        return myDebugProcess.searchScope
+    }
+}
+
+fun findModuleByPath(project: Project, path: String): GlobalSearchScope? {
+    val vf = VfsUtil.findFile(Paths.get(path), true) ?: return null
+    val module = ProjectFileIndex.getInstance(project).getModuleForFile(vf)
+    return module?.getModuleWithDependenciesAndLibrariesScope(true)
 }
 
 inline fun <U, V> U.readAction(crossinline f: (U) -> V): V {

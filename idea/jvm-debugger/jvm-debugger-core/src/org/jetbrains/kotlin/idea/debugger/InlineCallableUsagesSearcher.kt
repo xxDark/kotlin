@@ -5,11 +5,14 @@
 
 package org.jetbrains.kotlin.idea.debugger
 
-import com.intellij.debugger.engine.DebugProcess
 import com.intellij.openapi.application.ex.ApplicationManagerEx
+import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.JdkOrderEntry
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.impl.LibraryScopeCache
 import com.intellij.openapi.ui.MessageType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -21,6 +24,8 @@ import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.idea.debugger.DebuggerClassNameProvider.Companion.getRelevantElement
 import org.jetbrains.kotlin.idea.debugger.evaluate.KotlinDebuggerCaches
 import org.jetbrains.kotlin.idea.debugger.evaluate.KotlinDebuggerCaches.ComputedClassNames
+import org.jetbrains.kotlin.idea.search.minus
+import org.jetbrains.kotlin.idea.search.restrictToKotlinSources
 import org.jetbrains.kotlin.idea.search.usagesSearch.isImportUsage
 import org.jetbrains.kotlin.idea.stubindex.KotlinSourceFilterScope
 import org.jetbrains.kotlin.idea.util.ProjectRootsUtil
@@ -45,7 +50,10 @@ class InlineCallableUsagesSearcher(val project: Project, val searchScope: Global
             val declarationName = runReadAction { declaration.name ?: "<error>" }
 
             val task = Runnable {
-                for (reference in ReferencesSearch.search(declaration, getScopeForInlineDeclarationUsages(declaration))) {
+                val scope = getScopeForInlineDeclarationUsages(declaration)
+                val sp = ReferencesSearch.SearchParameters(declaration, scope, false)
+                val searchResults = ReferencesSearch.search(sp).toList()
+                for (reference in searchResults) {
                     processReference(declaration, reference, alreadyVisited)?.let { searchResult += it }
                 }
             }
@@ -106,12 +114,21 @@ class InlineCallableUsagesSearcher(val project: Project, val searchScope: Global
 
     private fun getScopeForInlineDeclarationUsages(inlineDeclaration: KtDeclaration): GlobalSearchScope {
         val virtualFile = runReadAction { inlineDeclaration.containingFile.virtualFile }
-        return if (virtualFile != null && ProjectRootsUtil.isLibraryFile(project, virtualFile)) {
-            searchScope.uniteWith(
-                KotlinSourceFilterScope.librarySources(GlobalSearchScope.allScope(project), project)
-            )
+
+        val effectiveScope = if (searchScope is ModuleWithDependenciesScope) {
+            val module = searchScope.module
+            val jdkOrderEntries = ModuleRootManager.getInstance(module).orderEntries.filterIsInstance<JdkOrderEntry>()
+            val jdkScope = LibraryScopeCache.getInstance(project).getLibraryScope(jdkOrderEntries.toMutableList())
+            searchScope.minus(jdkScope)
         } else {
             searchScope
         }
+
+        val scope = if (virtualFile != null && ProjectRootsUtil.isLibraryFile(project, virtualFile)) {
+            KotlinSourceFilterScope.projectAndLibrariesSources(effectiveScope, project)
+        } else {
+            KotlinSourceFilterScope.projectSources(effectiveScope, project)
+        }
+        return scope.restrictToKotlinSources()
     }
 }
