@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrAnonymousInitializerImpl
 import org.jetbrains.kotlin.ir.declarations.impl.IrClassImpl
 import org.jetbrains.kotlin.ir.descriptors.WrappedClassDescriptor
+import org.jetbrains.kotlin.ir.expressions.impl.IrInstanceInitializerCallImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
@@ -34,6 +35,8 @@ import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
+import org.jetbrains.kotlin.psi.psiUtil.pureEndOffset
+import org.jetbrains.kotlin.psi.psiUtil.pureStartOffset
 import org.jetbrains.kotlin.psi2ir.PsiSourceManager
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 
@@ -104,6 +107,11 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                 addValueParameter(name = "args", type = context.irBuiltIns.arrayClass.typeWith(context.irBuiltIns.stringType))
                 body = context.createIrBuilder(this.symbol).irBlockBody {
                     +irDelegatingConstructorCall(context.irBuiltIns.anyClass.owner.constructors.single())
+                    +IrInstanceInitializerCallImpl(
+                        irScript.startOffset, irScript.endOffset,
+                        irScriptClass.symbol,
+                        context.irBuiltIns.unitType
+                    )
                     irScript.statements.forEach {
                         it.acceptVoid(symbolRemapper)
                         +((it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass)) as IrStatement)
