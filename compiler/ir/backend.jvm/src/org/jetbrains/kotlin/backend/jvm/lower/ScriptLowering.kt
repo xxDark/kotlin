@@ -13,6 +13,8 @@ import org.jetbrains.kotlin.backend.jvm.JvmBackendContext
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
+import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.declarations.addConstructor
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.irBlockBody
@@ -21,11 +23,17 @@ import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrAnonymousInitializerImpl
 import org.jetbrains.kotlin.ir.declarations.impl.IrClassImpl
 import org.jetbrains.kotlin.ir.descriptors.WrappedClassDescriptor
-import org.jetbrains.kotlin.ir.expressions.impl.IrBlockBodyImpl
+import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
+import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrAnonymousInitializerSymbolImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrClassSymbolImpl
+import org.jetbrains.kotlin.ir.symbols.impl.IrScriptSymbolImpl
 import org.jetbrains.kotlin.ir.types.typeWith
-import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
+import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
+import org.jetbrains.kotlin.ir.visitors.acceptVoid
 import org.jetbrains.kotlin.psi2ir.PsiSourceManager
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 
@@ -64,33 +72,90 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
             irScriptClass.superTypes += context.irBuiltIns.anyType
             irScriptClass.parent = irFile
             irScriptClass.createImplicitParameterDeclarationWithWrappedDescriptor()
-            irScript.statements.forEach { scriptStatement ->
-                if (scriptStatement is IrDeclaration) {
-                    irScriptClass.declarations.add(scriptStatement.apply { parent = irScriptClass })
-                } else {
-                    val initializer =
-                        IrAnonymousInitializerImpl(
-                            scriptStatement.startOffset, scriptStatement.endOffset,
-                            IrDeclarationOrigin.SCRIPT_STATEMENT,
-                            IrAnonymousInitializerSymbolImpl(descriptor)
-                        ).also { initializer ->
-                            initializer.body =
-                                IrBlockBodyImpl(scriptStatement.startOffset, scriptStatement.endOffset, listOf(scriptStatement))
-                            initializer.parent = irScriptClass
-                        }
-                    irScriptClass.declarations.add(initializer)
-                }
+            val symbolRemapper = DeepCopySymbolRemapperToScriptClass(irScript.symbol, irScriptClass.symbol)
+            val deepCopyTransformer = DeepCopyIrTreeWithSymbols(symbolRemapper, DeepCopyTypeRemapper(symbolRemapper))
+            irScriptClass.thisReceiver = irScript.thisReceiver.run {
+                acceptVoid(symbolRemapper)
+                transform(deepCopyTransformer, null)
             }
+            irScript.declarations.forEach {
+                it.acceptVoid(symbolRemapper)
+                val copy = it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrDeclaration
+                irScriptClass.declarations.add(copy)
+            }
+//            val initializer =
+//                IrAnonymousInitializerImpl(
+//                    irScript.startOffset, irScript.endOffset,
+//                    IrDeclarationOrigin.SCRIPT_STATEMENT,
+//                    IrAnonymousInitializerSymbolImpl(descriptor)
+//                ).apply {
+//                    body = context.createIrBuilder(this.symbol).irBlockBody {
+//                        irScript.statements.forEach {
+//                            it.acceptVoid(symbolRemapper)
+//                            +((it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass)) as IrStatement)
+//                        }
+//                    }
+//                    parent = irScriptClass
+//                }
+//            irScriptClass.declarations.add(initializer)
             irScriptClass.addConstructor {
                 isPrimary = true
             }.apply {
                 addValueParameter(name = "args", type = context.irBuiltIns.arrayClass.typeWith(context.irBuiltIns.stringType))
                 body = context.createIrBuilder(this.symbol).irBlockBody {
                     +irDelegatingConstructorCall(context.irBuiltIns.anyClass.owner.constructors.single())
+                    irScript.statements.forEach {
+                        it.acceptVoid(symbolRemapper)
+                        +((it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass)) as IrStatement)
+                    }
                 }
             }
             irScriptClass.annotations += irFile.annotations
             irScriptClass.metadata = irFile.metadata
         }
+    }
+
+    object DECLARATION_ORIGIN_FIELD_FOR_SCRIPT_VARIABLE :
+        IrDeclarationOriginImpl("FIELD_FOR_SCRIPT_VARIABL", isSynthetic = true)
+
+    private class DeepCopySymbolRemapperToScriptClass(
+        val scriptSymbol: IrScriptSymbol,
+        val scriptClassSymbol: IrClassSymbol
+    ) : DeepCopySymbolRemapper() {
+
+        override fun getReferencedClassifier(symbol: IrClassifierSymbol): IrClassifierSymbol =
+            super.getReferencedClassifier(
+                if (symbol == scriptSymbol) scriptClassSymbol
+                else symbol
+            )
+
+        private val scripts = hashMapOf<IrScriptSymbol, IrScriptSymbol>()
+
+        override fun visitScript(declaration: IrScript) {
+            remapSymbol(scripts, declaration) {
+                IrScriptSymbolImpl(it.descriptor)
+            }
+            declaration.acceptChildrenVoid(this)
+        }
+    }
+
+    fun <T : IrElement> T.patchDeclarationParentsToScriptClass(
+        script: IrScript,
+        scriptClass: IrClass
+    ) = apply {
+        val visitor = object : IrElementVisitorVoid {
+
+            override fun visitElement(element: IrElement) {
+                element.acceptChildrenVoid(this)
+            }
+
+            override fun visitDeclaration(declaration: IrDeclaration) {
+                if (declaration.parent == script) {
+                    declaration.parent = scriptClass
+                }
+                super.visitDeclaration(declaration)
+            }
+        }
+        acceptVoid(visitor)
     }
 }
