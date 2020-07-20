@@ -26,6 +26,7 @@ class JsErrorDeclarationLowering(context: JsIrBackendContext) : ErrorDeclaration
     private val errorSymbol = context.errorSymbol
 
     override fun transformErrorDeclaration(declaration: IrErrorDeclaration): IrDeclaration {
+        require(errorSymbol != null) { "Should be non-null if errors are allowed" }
         return with(IrFunctionBuilder()) {
             updateFrom(declaration)
             returnType = nothingType
@@ -54,6 +55,7 @@ class JsErrorExpressionLowering(context: JsIrBackendContext) : ErrorExpressionLo
     }
 
     private fun buildThrowError(element: IrElement, description: String): IrExpression {
+        require(errorSymbol != null) { "Should be non-null if errors are allowed" }
         return element.run {
             IrCallImpl(startOffset, endOffset, nothingType, errorSymbol, 0, 1, null, null).apply {
                 putValueArgument(0, IrConstImpl.string(startOffset, endOffset, stringType, description))
