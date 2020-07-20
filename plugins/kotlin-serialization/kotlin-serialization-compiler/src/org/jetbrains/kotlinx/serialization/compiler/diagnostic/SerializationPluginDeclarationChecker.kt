@@ -42,9 +42,13 @@ open class SerializationPluginDeclarationChecker : DeclarationChecker {
 
         if (!canBeSerializedInternally(descriptor, declaration, context.trace)) return
         if (declaration !is KtPureClassOrObject) return
-        VersionReader.getVersionsForCurrentModuleFromTrace(descriptor.module, context.trace)?.let {
-            checkMinKotlin(it, descriptor, context.trace)
-            checkMinRuntime(it, descriptor, context.trace)
+        if (!isIde) {
+            // In IDE, BindingTrace is recreated each time code is modified, effectively resulting in JAR manifest read every time user types
+            // something, which may be very slow. So we perform this check only during CLI/Gradle compilation.
+            VersionReader.getVersionsForCurrentModuleFromTrace(descriptor.module, context.trace)?.let {
+                checkMinKotlin(it, descriptor, context.trace)
+                checkMinRuntime(it, descriptor, context.trace)
+            }
         }
         val props = buildSerializableProperties(descriptor, context.trace) ?: return
         checkCorrectTransientAnnotationIsUsed(descriptor, props.serializableProperties, context.trace)
@@ -84,6 +88,8 @@ open class SerializationPluginDeclarationChecker : DeclarationChecker {
             )
         }
     }
+
+    protected open val isIde: Boolean get() = false
 
     private fun checkCorrectTransientAnnotationIsUsed(
         descriptor: ClassDescriptor,
