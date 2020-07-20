@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.js.config
 
-enum class ErrorIgnorancePolicy(val allowSyntaxErrors: Boolean, val allowSemanticErrors: Boolean) {
+enum class ErrorTolerancePolicy(val allowSyntaxErrors: Boolean, val allowSemanticErrors: Boolean) {
     NONE(false, false),
     SEMANTIC(false, true),
     ALL(true, true);
@@ -15,7 +15,7 @@ enum class ErrorIgnorancePolicy(val allowSyntaxErrors: Boolean, val allowSemanti
     companion object {
         val DEFAULT = NONE
 
-        fun resolvePolicy(key: String): ErrorIgnorancePolicy {
+        fun resolvePolicy(key: String): ErrorTolerancePolicy {
             return when (key.toUpperCase()) {
                 "NONE" -> NONE
                 "SEMANTIC" -> SEMANTIC

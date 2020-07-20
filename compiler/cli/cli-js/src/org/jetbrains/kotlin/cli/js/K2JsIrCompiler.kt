@@ -306,10 +306,10 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
         configuration.putIfNotNull(CommonConfigurationKeys.LOOKUP_TRACKER, services[LookupTracker::class.java])
         configuration.putIfNotNull(CommonConfigurationKeys.EXPECT_ACTUAL_TRACKER, services[ExpectActualTracker::class.java])
 
-        val errorIgnorancePolicy = arguments.errorIgnorancePolicy?.let { ErrorIgnorancePolicy.resolvePolicy(it) }
-        configuration.putIfNotNull(JSConfigurationKeys.ERROR_IGNORANCE_POLICY, errorIgnorancePolicy)
+        val errorTolerancePolicy = arguments.errorTolerancePolicy?.let { ErrorTolerancePolicy.resolvePolicy(it) }
+        configuration.putIfNotNull(JSConfigurationKeys.ERROR_TOLERANCE_POLICY, errorTolerancePolicy)
 
-        if (errorIgnorancePolicy?.allowErrors == true) {
+        if (errorTolerancePolicy?.allowErrors == true) {
             configuration.put(JSConfigurationKeys.DEVELOPER_MODE, true)
         }
 

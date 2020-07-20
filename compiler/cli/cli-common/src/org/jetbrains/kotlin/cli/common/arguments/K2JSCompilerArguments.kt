@@ -175,8 +175,8 @@ class K2JSCompilerArguments : CommonCompilerArguments() {
     @Argument(value = "-Xdisable-fake-override-validator", description = "Disable IR fake override validator")
     var disableFakeOverrideValidator: Boolean by FreezableVar(false)
 
-    @Argument(value = "-Xerror-ignorance-policy", description = "Set up error ignorance policy (NONE, SEMANTIC, SYNTAX, ALL)")
-    var errorIgnorancePolicy: String? by NullableStringFreezableVar(null)
+    @Argument(value = "-Xerror-tolerance-policy", description = "Set up error tolerance policy (NONE, SEMANTIC, SYNTAX, ALL)")
+    var errorTolerancePolicy: String? by NullableStringFreezableVar(null)
 
     override fun checkIrSupport(languageVersionSettings: LanguageVersionSettings, collector: MessageCollector) {
         if (!isIrBackendEnabled()) return

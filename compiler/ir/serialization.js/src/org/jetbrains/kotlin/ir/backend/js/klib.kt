@@ -41,7 +41,7 @@ import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
 import org.jetbrains.kotlin.js.analyzer.JsAnalysisResult
-import org.jetbrains.kotlin.js.config.ErrorIgnorancePolicy
+import org.jetbrains.kotlin.js.config.ErrorTolerancePolicy
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
 import org.jetbrains.kotlin.konan.properties.propertyList
 import org.jetbrains.kotlin.konan.util.KlibMetadataFactories
@@ -107,7 +107,7 @@ fun generateKLib(
     nopack: Boolean
 ) {
     val incrementalDataProvider = configuration.get(JSConfigurationKeys.INCREMENTAL_DATA_PROVIDER)
-    val errorPolicy = configuration.get(JSConfigurationKeys.ERROR_IGNORANCE_POLICY) ?: ErrorIgnorancePolicy.DEFAULT
+    val errorPolicy = configuration.get(JSConfigurationKeys.ERROR_TOLERANCE_POLICY) ?: ErrorTolerancePolicy.DEFAULT
 
     val icData: List<KotlinFileSerializedData>
     val serializedIrFiles: List<SerializedIrFile>?
@@ -220,7 +220,7 @@ fun loadIr(
 ): IrModuleInfo {
     val depsDescriptors = ModulesStructure(project, mainModule, analyzer, configuration, allDependencies, friendDependencies)
     val deserializeFakeOverrides = configuration.getBoolean(CommonConfigurationKeys.DESERIALIZE_FAKE_OVERRIDES)
-    val errorPolicy = configuration.get(JSConfigurationKeys.ERROR_IGNORANCE_POLICY) ?: ErrorIgnorancePolicy.DEFAULT
+    val errorPolicy = configuration.get(JSConfigurationKeys.ERROR_TOLERANCE_POLICY) ?: ErrorTolerancePolicy.DEFAULT
 
     when (mainModule) {
         is MainModule.SourceFiles -> {
@@ -289,13 +289,13 @@ fun loadIr(
     }
 }
 
-private fun runAnalysisAndPreparePsi2Ir(depsDescriptors: ModulesStructure, errorIgnorancePolicy: ErrorIgnorancePolicy): GeneratorContext {
-    val analysisResult = depsDescriptors.runAnalysis(errorIgnorancePolicy)
+private fun runAnalysisAndPreparePsi2Ir(depsDescriptors: ModulesStructure, errorTolerancePolicy: ErrorTolerancePolicy): GeneratorContext {
+    val analysisResult = depsDescriptors.runAnalysis(errorTolerancePolicy)
     val mangler = JsManglerDesc
     val signaturer = IdSignatureDescriptor(mangler)
 
     return createGeneratorContext(
-        Psi2IrConfiguration(errorIgnorancePolicy.allowErrors),
+        Psi2IrConfiguration(errorTolerancePolicy.allowErrors),
         analysisResult.moduleDescriptor,
         analysisResult.bindingContext,
         depsDescriptors.compilerConfiguration.languageVersionSettings,
@@ -384,7 +384,7 @@ private class ModulesStructure(
 
     val builtInsDep = allDependencies.getFullList().find { it.isBuiltIns }
 
-    fun runAnalysis(errorPolicy: ErrorIgnorancePolicy): JsAnalysisResult {
+    fun runAnalysis(errorPolicy: ErrorTolerancePolicy): JsAnalysisResult {
         require(mainModule is MainModule.SourceFiles)
         val files = mainModule.files
 

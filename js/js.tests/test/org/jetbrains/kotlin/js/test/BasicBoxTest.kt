@@ -126,7 +126,7 @@ abstract class BasicBoxTest(
         val expectActualLinker = EXPECT_ACTUAL_LINKER.matcher(fileContent).find()
         val errorPolicyMatcher = ERROR_POLICY_PATTERN.matcher(fileContent)
         val errorPolicy =
-            if (errorPolicyMatcher.find()) ErrorIgnorancePolicy.resolvePolicy(errorPolicyMatcher.group(1)) else ErrorIgnorancePolicy.DEFAULT
+            if (errorPolicyMatcher.find()) ErrorTolerancePolicy.resolvePolicy(errorPolicyMatcher.group(1)) else ErrorTolerancePolicy.DEFAULT
 
         val skipDceDriven = SKIP_DCE_DRIVEN.matcher(fileContent).find()
         val splitPerModule = SPLIT_PER_MODULE.matcher(fileContent).find()
@@ -398,7 +398,7 @@ abstract class BasicBoxTest(
         expectActualLinker: Boolean,
         skipDceDriven: Boolean,
         splitPerModule: Boolean,
-        errorIgnorancePolicy: ErrorIgnorancePolicy
+        errorTolerancePolicy: ErrorTolerancePolicy
     ) {
         val kotlinFiles =  module.files.filter { it.fileName.endsWith(".kt") }
         val testFiles = kotlinFiles.map { it.fileName }
@@ -414,7 +414,7 @@ abstract class BasicBoxTest(
         val psiFiles = createPsiFiles(allSourceFiles.sortedBy { it.canonicalPath }.map { it.canonicalPath })
 
         val sourceDirs = (testFiles + additionalFiles).map { File(it).parent }.distinct()
-        val config = createConfig(sourceDirs, module, dependencies, allDependencies, friends, multiModule, tmpDir, incrementalData = null, expectActualLinker = expectActualLinker, errorIgnorancePolicy)
+        val config = createConfig(sourceDirs, module, dependencies, allDependencies, friends, multiModule, tmpDir, incrementalData = null, expectActualLinker = expectActualLinker, errorTolerancePolicy)
         val outputFile = File(outputFileName)
         val dceOutputFile = File(dceOutputFileName)
         val pirOutputFile = File(pirOutputFileName)
@@ -469,7 +469,7 @@ abstract class BasicBoxTest(
                 .sortedBy { it.canonicalPath }
                 .map { sourceToTranslationUnit[it]!! }
 
-        val recompiledConfig = createConfig(sourceDirs, module, dependencies, allDependencies, friends, multiModule, tmpDir, incrementalData, expectActualLinker, ErrorIgnorancePolicy.DEFAULT)
+        val recompiledConfig = createConfig(sourceDirs, module, dependencies, allDependencies, friends, multiModule, tmpDir, incrementalData, expectActualLinker, ErrorTolerancePolicy.DEFAULT)
         val recompiledOutputFile = File(outputFile.parentFile, outputFile.nameWithoutExtension + "-recompiled.js")
 
         translateFiles(
@@ -685,7 +685,7 @@ abstract class BasicBoxTest(
 
     private fun createConfig(
         sourceDirs: List<String>, module: TestModule, dependencies: List<String>, allDependencies: List<String>, friends: List<String>,
-        multiModule: Boolean, tmpDir: File, incrementalData: IncrementalData?, expectActualLinker: Boolean, errorIgnorancePolicy: ErrorIgnorancePolicy
+        multiModule: Boolean, tmpDir: File, incrementalData: IncrementalData?, expectActualLinker: Boolean, errorTolerancePolicy: ErrorTolerancePolicy
     ): JsConfig {
         val configuration = environment.configuration.copy()
 
@@ -708,9 +708,9 @@ abstract class BasicBoxTest(
         configuration.put(CommonConfigurationKeys.MODULE_NAME, module.name.removeSuffix(OLD_MODULE_SUFFIX))
         configuration.put(JSConfigurationKeys.MODULE_KIND, module.moduleKind)
         configuration.put(JSConfigurationKeys.TARGET, EcmaVersion.v5)
-        configuration.put(JSConfigurationKeys.ERROR_IGNORANCE_POLICY, errorIgnorancePolicy)
+        configuration.put(JSConfigurationKeys.ERROR_TOLERANCE_POLICY, errorTolerancePolicy)
 
-        if (errorIgnorancePolicy.allowErrors) {
+        if (errorTolerancePolicy.allowErrors) {
             configuration.put(JSConfigurationKeys.DEVELOPER_MODE, true)
         }
 
