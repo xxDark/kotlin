@@ -1,7 +1,6 @@
 @kotlin.coroutines.jvm.internal.DebugMetadata
 @kotlin.Metadata
 final class Component1Kt$test$1 {
-    field L$0: java.lang.Object
     field label: int
     private field p$: Foo
     inner (anonymous) class Component1Kt$test$1
