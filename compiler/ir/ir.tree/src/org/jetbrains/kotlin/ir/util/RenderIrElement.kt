@@ -732,6 +732,7 @@ internal fun IrClassifierSymbol.renderClassifierFqn(): String =
     if (isBound)
         when (val owner = owner) {
             is IrClass -> owner.renderClassFqn()
+            is IrScript -> owner.renderScriptFqn()
             is IrTypeParameter -> owner.renderTypeParameterFqn()
             else -> "`unexpected classifier: ${owner.render()}`"
         }
@@ -745,6 +746,9 @@ internal fun IrTypeAliasSymbol.renderTypeAliasFqn(): String =
         "<unbound $this>"
 
 internal fun IrClass.renderClassFqn(): String =
+    StringBuilder().also { renderDeclarationFqn(it) }.toString()
+
+internal fun IrScript.renderScriptFqn(): String =
     StringBuilder().also { renderDeclarationFqn(it) }.toString()
 
 internal fun IrTypeParameter.renderTypeParameterFqn(): String =
