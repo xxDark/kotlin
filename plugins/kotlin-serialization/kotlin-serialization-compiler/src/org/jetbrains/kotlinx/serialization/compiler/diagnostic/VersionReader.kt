@@ -10,6 +10,9 @@ import org.jetbrains.kotlin.config.ApiVersion
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.load.kotlin.KotlinJvmBinarySourceElement
+import org.jetbrains.kotlin.resolve.BindingTrace
+import org.jetbrains.kotlin.util.slicedMap.Slices
+import org.jetbrains.kotlin.util.slicedMap.WritableSlice
 import org.jetbrains.kotlinx.serialization.compiler.resolve.SerialEntityNames
 import org.jetbrains.kotlinx.serialization.compiler.resolve.getClassFromSerializationPackage
 import java.io.File
@@ -37,6 +40,15 @@ object VersionReader {
 
     private val REQUIRE_KOTLIN_VERSION = Attributes.Name("Require-Kotlin-Version")
     private const val CLASS_SUFFIX = "!/kotlinx/serialization/KSerializer.class"
+
+    private val VERSIONS_SLICE: WritableSlice<ModuleDescriptor, RuntimeVersions> = Slices.createSimpleSlice()
+
+    fun getVersionsForCurrentModuleFromTrace(module: ModuleDescriptor, trace: BindingTrace): RuntimeVersions? {
+        trace.get(VERSIONS_SLICE, module)?.let { return it }
+        val versions = getVersionsForCurrentModule(module) ?: return null
+        trace.record(VERSIONS_SLICE, module, versions)
+        return versions
+    }
 
     fun getVersionsForCurrentModule(module: ModuleDescriptor): RuntimeVersions? {
         val markerClass = module.getClassFromSerializationPackage(SerialEntityNames.KSERIALIZER_CLASS)

@@ -42,8 +42,7 @@ open class SerializationPluginDeclarationChecker : DeclarationChecker {
 
         if (!canBeSerializedInternally(descriptor, declaration, context.trace)) return
         if (declaration !is KtPureClassOrObject) return
-        // todo: cache value with versions
-        VersionReader.getVersionsForCurrentModule(descriptor.module)?.let {
+        VersionReader.getVersionsForCurrentModuleFromTrace(descriptor.module, context.trace)?.let {
             checkMinKotlin(it, descriptor, context.trace)
             checkMinRuntime(it, descriptor, context.trace)
         }
