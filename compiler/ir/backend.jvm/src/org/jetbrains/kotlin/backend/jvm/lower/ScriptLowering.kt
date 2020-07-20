@@ -50,11 +50,10 @@ internal val scriptToClassPhase = makeIrModulePhase(
 private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweringPass {
 
     override fun lower(irFile: IrFile) {
-        val scriptClasses = irFile.declarations.filterIsInstance<IrScript>().map {
-            makeScriptClass(irFile, it)
+        irFile.declarations.replaceAll { declaration ->
+            if (declaration is IrScript) makeScriptClass(irFile, declaration)
+            else declaration
         }
-        irFile.declarations.clear()
-        irFile.declarations.addAll(scriptClasses)
     }
 
     private fun makeScriptClass(irFile: IrFile, irScript: IrScript): IrClass {
