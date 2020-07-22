@@ -50,7 +50,7 @@ fun lookupSuperTypes(
     supertypeSupplier: SupertypeSupplier = SupertypeSupplier.Default
 ): List<ConeClassLikeType> {
     return mutableListOf<ConeClassLikeType>().also {
-        symbol.collectSuperTypes(it, mutableSetOf(), deep, lookupInterfaces, useSiteSession, supertypeSupplier)
+        symbol.collectSuperTypes(it, mutableSetOf(), deep, lookupInterfaces, false, useSiteSession, supertypeSupplier)
     }
 }
 
