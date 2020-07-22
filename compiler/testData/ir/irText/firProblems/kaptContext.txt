@@ -1,0 +1,314 @@
+FILE fqName:<root> fileName:/kaptContext.kt
+  CLASS CLASS name:KaptOptions modality:FINAL visibility:public superTypes:[kotlin.Any]
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.KaptOptions
+    CONSTRUCTOR visibility:public <> (projectBaseDir:java.io.File?, compileClasspath:kotlin.collections.List<java.io.File>, javaSourceRoots:kotlin.collections.List<java.io.File>, changedFiles:kotlin.collections.List<java.io.File>, compiledSources:kotlin.collections.List<java.io.File>, incrementalCache:java.io.File?, classpathChanges:kotlin.collections.List<kotlin.String>, sourcesOutputDir:java.io.File, classesOutputDir:java.io.File, stubsOutputDir:java.io.File, incrementalDataOutputDir:java.io.File?, processingClasspath:kotlin.collections.List<java.io.File>, processors:kotlin.collections.List<kotlin.String>, processingOptions:kotlin.collections.Map<kotlin.String, kotlin.String>, javacOptions:kotlin.collections.Map<kotlin.String, kotlin.String>) returnType:<root>.KaptOptions [primary]
+      VALUE_PARAMETER name:projectBaseDir index:0 type:java.io.File?
+      VALUE_PARAMETER name:compileClasspath index:1 type:kotlin.collections.List<java.io.File>
+      VALUE_PARAMETER name:javaSourceRoots index:2 type:kotlin.collections.List<java.io.File>
+      VALUE_PARAMETER name:changedFiles index:3 type:kotlin.collections.List<java.io.File>
+      VALUE_PARAMETER name:compiledSources index:4 type:kotlin.collections.List<java.io.File>
+      VALUE_PARAMETER name:incrementalCache index:5 type:java.io.File?
+      VALUE_PARAMETER name:classpathChanges index:6 type:kotlin.collections.List<kotlin.String>
+      VALUE_PARAMETER name:sourcesOutputDir index:7 type:java.io.File
+      VALUE_PARAMETER name:classesOutputDir index:8 type:java.io.File
+      VALUE_PARAMETER name:stubsOutputDir index:9 type:java.io.File
+      VALUE_PARAMETER name:incrementalDataOutputDir index:10 type:java.io.File?
+      VALUE_PARAMETER name:processingClasspath index:11 type:kotlin.collections.List<java.io.File>
+      VALUE_PARAMETER name:processors index:12 type:kotlin.collections.List<kotlin.String>
+      VALUE_PARAMETER name:processingOptions index:13 type:kotlin.collections.Map<kotlin.String, kotlin.String>
+      VALUE_PARAMETER name:javacOptions index:14 type:kotlin.collections.Map<kotlin.String, kotlin.String>
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:KaptOptions modality:FINAL visibility:public superTypes:[kotlin.Any]'
+    PROPERTY name:projectBaseDir visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:projectBaseDir type:java.io.File? visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'projectBaseDir: java.io.File? declared in <root>.KaptOptions.<init>' type=java.io.File? origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-projectBaseDir> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File?
+        correspondingProperty: PROPERTY name:projectBaseDir visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-projectBaseDir> (): java.io.File? declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:projectBaseDir type:java.io.File? visibility:private [final]' type=java.io.File? origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-projectBaseDir>' type=<root>.KaptOptions origin=null
+    PROPERTY name:compileClasspath visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:compileClasspath type:kotlin.collections.List<java.io.File> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'compileClasspath: kotlin.collections.List<java.io.File> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<java.io.File> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-compileClasspath> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<java.io.File>
+        correspondingProperty: PROPERTY name:compileClasspath visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-compileClasspath> (): kotlin.collections.List<java.io.File> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:compileClasspath type:kotlin.collections.List<java.io.File> visibility:private [final]' type=kotlin.collections.List<java.io.File> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-compileClasspath>' type=<root>.KaptOptions origin=null
+    PROPERTY name:javaSourceRoots visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:javaSourceRoots type:kotlin.collections.List<java.io.File> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'javaSourceRoots: kotlin.collections.List<java.io.File> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<java.io.File> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-javaSourceRoots> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<java.io.File>
+        correspondingProperty: PROPERTY name:javaSourceRoots visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-javaSourceRoots> (): kotlin.collections.List<java.io.File> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:javaSourceRoots type:kotlin.collections.List<java.io.File> visibility:private [final]' type=kotlin.collections.List<java.io.File> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-javaSourceRoots>' type=<root>.KaptOptions origin=null
+    PROPERTY name:changedFiles visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:changedFiles type:kotlin.collections.List<java.io.File> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'changedFiles: kotlin.collections.List<java.io.File> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<java.io.File> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-changedFiles> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<java.io.File>
+        correspondingProperty: PROPERTY name:changedFiles visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-changedFiles> (): kotlin.collections.List<java.io.File> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:changedFiles type:kotlin.collections.List<java.io.File> visibility:private [final]' type=kotlin.collections.List<java.io.File> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-changedFiles>' type=<root>.KaptOptions origin=null
+    PROPERTY name:compiledSources visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:compiledSources type:kotlin.collections.List<java.io.File> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'compiledSources: kotlin.collections.List<java.io.File> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<java.io.File> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-compiledSources> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<java.io.File>
+        correspondingProperty: PROPERTY name:compiledSources visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-compiledSources> (): kotlin.collections.List<java.io.File> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:compiledSources type:kotlin.collections.List<java.io.File> visibility:private [final]' type=kotlin.collections.List<java.io.File> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-compiledSources>' type=<root>.KaptOptions origin=null
+    PROPERTY name:incrementalCache visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:incrementalCache type:java.io.File? visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'incrementalCache: java.io.File? declared in <root>.KaptOptions.<init>' type=java.io.File? origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-incrementalCache> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File?
+        correspondingProperty: PROPERTY name:incrementalCache visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-incrementalCache> (): java.io.File? declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:incrementalCache type:java.io.File? visibility:private [final]' type=java.io.File? origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-incrementalCache>' type=<root>.KaptOptions origin=null
+    PROPERTY name:classpathChanges visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:classpathChanges type:kotlin.collections.List<kotlin.String> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'classpathChanges: kotlin.collections.List<kotlin.String> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<kotlin.String> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-classpathChanges> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<kotlin.String>
+        correspondingProperty: PROPERTY name:classpathChanges visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-classpathChanges> (): kotlin.collections.List<kotlin.String> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:classpathChanges type:kotlin.collections.List<kotlin.String> visibility:private [final]' type=kotlin.collections.List<kotlin.String> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-classpathChanges>' type=<root>.KaptOptions origin=null
+    PROPERTY name:sourcesOutputDir visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:sourcesOutputDir type:java.io.File visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'sourcesOutputDir: java.io.File declared in <root>.KaptOptions.<init>' type=java.io.File origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-sourcesOutputDir> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File
+        correspondingProperty: PROPERTY name:sourcesOutputDir visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-sourcesOutputDir> (): java.io.File declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:sourcesOutputDir type:java.io.File visibility:private [final]' type=java.io.File origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-sourcesOutputDir>' type=<root>.KaptOptions origin=null
+    PROPERTY name:classesOutputDir visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:classesOutputDir type:java.io.File visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'classesOutputDir: java.io.File declared in <root>.KaptOptions.<init>' type=java.io.File origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-classesOutputDir> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File
+        correspondingProperty: PROPERTY name:classesOutputDir visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-classesOutputDir> (): java.io.File declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:classesOutputDir type:java.io.File visibility:private [final]' type=java.io.File origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-classesOutputDir>' type=<root>.KaptOptions origin=null
+    PROPERTY name:stubsOutputDir visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:stubsOutputDir type:java.io.File visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'stubsOutputDir: java.io.File declared in <root>.KaptOptions.<init>' type=java.io.File origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-stubsOutputDir> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File
+        correspondingProperty: PROPERTY name:stubsOutputDir visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-stubsOutputDir> (): java.io.File declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:stubsOutputDir type:java.io.File visibility:private [final]' type=java.io.File origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-stubsOutputDir>' type=<root>.KaptOptions origin=null
+    PROPERTY name:incrementalDataOutputDir visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:incrementalDataOutputDir type:java.io.File? visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'incrementalDataOutputDir: java.io.File? declared in <root>.KaptOptions.<init>' type=java.io.File? origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-incrementalDataOutputDir> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File?
+        correspondingProperty: PROPERTY name:incrementalDataOutputDir visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-incrementalDataOutputDir> (): java.io.File? declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:incrementalDataOutputDir type:java.io.File? visibility:private [final]' type=java.io.File? origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-incrementalDataOutputDir>' type=<root>.KaptOptions origin=null
+    PROPERTY name:processingClasspath visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:processingClasspath type:kotlin.collections.List<java.io.File> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'processingClasspath: kotlin.collections.List<java.io.File> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<java.io.File> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-processingClasspath> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<java.io.File>
+        correspondingProperty: PROPERTY name:processingClasspath visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-processingClasspath> (): kotlin.collections.List<java.io.File> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:processingClasspath type:kotlin.collections.List<java.io.File> visibility:private [final]' type=kotlin.collections.List<java.io.File> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-processingClasspath>' type=<root>.KaptOptions origin=null
+    PROPERTY name:processors visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:processors type:kotlin.collections.List<kotlin.String> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'processors: kotlin.collections.List<kotlin.String> declared in <root>.KaptOptions.<init>' type=kotlin.collections.List<kotlin.String> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-processors> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.List<kotlin.String>
+        correspondingProperty: PROPERTY name:processors visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-processors> (): kotlin.collections.List<kotlin.String> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:processors type:kotlin.collections.List<kotlin.String> visibility:private [final]' type=kotlin.collections.List<kotlin.String> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-processors>' type=<root>.KaptOptions origin=null
+    PROPERTY name:processingOptions visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:processingOptions type:kotlin.collections.Map<kotlin.String, kotlin.String> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'processingOptions: kotlin.collections.Map<kotlin.String, kotlin.String> declared in <root>.KaptOptions.<init>' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-processingOptions> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.Map<kotlin.String, kotlin.String>
+        correspondingProperty: PROPERTY name:processingOptions visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-processingOptions> (): kotlin.collections.Map<kotlin.String, kotlin.String> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:processingOptions type:kotlin.collections.Map<kotlin.String, kotlin.String> visibility:private [final]' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-processingOptions>' type=<root>.KaptOptions origin=null
+    PROPERTY name:javacOptions visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:javacOptions type:kotlin.collections.Map<kotlin.String, kotlin.String> visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'javacOptions: kotlin.collections.Map<kotlin.String, kotlin.String> declared in <root>.KaptOptions.<init>' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-javacOptions> visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:kotlin.collections.Map<kotlin.String, kotlin.String>
+        correspondingProperty: PROPERTY name:javacOptions visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-javacOptions> (): kotlin.collections.Map<kotlin.String, kotlin.String> declared in <root>.KaptOptions'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:javacOptions type:kotlin.collections.Map<kotlin.String, kotlin.String> visibility:private [final]' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+              receiver: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.<get-javacOptions>' type=<root>.KaptOptions origin=null
+    FUN name:getKotlinGeneratedSourcesDirectory visibility:public modality:FINAL <> ($this:<root>.KaptOptions) returnType:java.io.File
+      $this: VALUE_PARAMETER name:<this> type:<root>.KaptOptions
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun getKotlinGeneratedSourcesDirectory (): java.io.File declared in <root>.KaptOptions'
+          CALL 'public final fun <get-stubsOutputDir> (): java.io.File declared in <root>.KaptOptions' type=java.io.File origin=GET_PROPERTY
+            $this: GET_VAR '<this>: <root>.KaptOptions declared in <root>.KaptOptions.getKotlinGeneratedSourcesDirectory' type=<root>.KaptOptions origin=null
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+      VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN name:warn visibility:public modality:FINAL <> (s:kotlin.String) returnType:kotlin.Unit
+    VALUE_PARAMETER name:s index:0 type:kotlin.String
+    BLOCK_BODY
+  CLASS CLASS name:KaptContext modality:OPEN visibility:public superTypes:[kotlin.Any]
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.KaptContext
+    CONSTRUCTOR visibility:public <> (options:<root>.KaptOptions, flag:kotlin.Boolean) returnType:<root>.KaptContext [primary]
+      VALUE_PARAMETER name:options index:0 type:<root>.KaptOptions
+      VALUE_PARAMETER name:flag index:1 type:kotlin.Boolean
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:KaptContext modality:OPEN visibility:public superTypes:[kotlin.Any]'
+    PROPERTY name:options visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:options type:<root>.KaptOptions visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'options: <root>.KaptOptions declared in <root>.KaptContext.<init>' type=<root>.KaptOptions origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-options> visibility:public modality:FINAL <> ($this:<root>.KaptContext) returnType:<root>.KaptOptions
+        correspondingProperty: PROPERTY name:options visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptContext
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-options> (): <root>.KaptOptions declared in <root>.KaptContext'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:options type:<root>.KaptOptions visibility:private [final]' type=<root>.KaptOptions origin=null
+              receiver: GET_VAR '<this>: <root>.KaptContext declared in <root>.KaptContext.<get-options>' type=<root>.KaptContext origin=null
+    PROPERTY name:flag visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:flag type:kotlin.Boolean visibility:private [final]
+        EXPRESSION_BODY
+          GET_VAR 'flag: kotlin.Boolean declared in <root>.KaptContext.<init>' type=kotlin.Boolean origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-flag> visibility:public modality:FINAL <> ($this:<root>.KaptContext) returnType:kotlin.Boolean
+        correspondingProperty: PROPERTY name:flag visibility:public modality:FINAL [val]
+        $this: VALUE_PARAMETER name:<this> type:<root>.KaptContext
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-flag> (): kotlin.Boolean declared in <root>.KaptContext'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:flag type:kotlin.Boolean visibility:private [final]' type=kotlin.Boolean origin=null
+              receiver: GET_VAR '<this>: <root>.KaptContext declared in <root>.KaptContext.<get-flag>' type=<root>.KaptContext origin=null
+    ANONYMOUS_INITIALIZER isStatic=false
+      BLOCK_BODY
+        WHEN type=kotlin.Unit origin=IF
+          BRANCH
+            if: CALL 'public final fun <get-flag> (): kotlin.Boolean declared in <root>.KaptContext' type=kotlin.Boolean origin=GET_PROPERTY
+              $this: GET_VAR '<this>: <root>.KaptContext declared in <root>.KaptContext' type=<root>.KaptContext origin=null
+            then: BLOCK type=kotlin.Unit origin=null
+              FUN name:deleteAndCreate visibility:local modality:FINAL <> (dir:java.io.File) returnType:kotlin.Unit
+                VALUE_PARAMETER name:dir index:0 type:java.io.File
+                BLOCK_BODY
+                  WHEN type=kotlin.Unit origin=IF
+                    BRANCH
+                      if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCL
+                        $this: CALL 'public final fun deleteRecursively (): kotlin.Boolean declared in kotlin.io' type=kotlin.Boolean origin=null
+                          $receiver: GET_VAR 'dir: java.io.File declared in <root>.KaptContext.deleteAndCreate' type=java.io.File origin=null
+                      then: CALL 'public final fun warn (s: kotlin.String): kotlin.Unit declared in <root>' type=kotlin.Unit origin=null
+                        s: STRING_CONCATENATION type=kotlin.String
+                          CONST String type=kotlin.String value="Unable to delete "
+                          GET_VAR 'dir: java.io.File declared in <root>.KaptContext.deleteAndCreate' type=java.io.File origin=null
+                          CONST String type=kotlin.String value="."
+                  WHEN type=kotlin.Unit origin=IF
+                    BRANCH
+                      if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCL
+                        $this: CALL 'public open fun mkdir (): kotlin.Boolean declared in java.io.File' type=kotlin.Boolean origin=null
+                          $this: GET_VAR 'dir: java.io.File declared in <root>.KaptContext.deleteAndCreate' type=java.io.File origin=null
+                      then: CALL 'public final fun warn (s: kotlin.String): kotlin.Unit declared in <root>' type=kotlin.Unit origin=null
+                        s: STRING_CONCATENATION type=kotlin.String
+                          CONST String type=kotlin.String value="Unable to create "
+                          GET_VAR 'dir: java.io.File declared in <root>.KaptContext.deleteAndCreate' type=java.io.File origin=null
+                          CONST String type=kotlin.String value="."
+              CALL 'local final fun deleteAndCreate (dir: java.io.File): kotlin.Unit declared in <root>.KaptContext' type=kotlin.Unit origin=null
+                dir: CALL 'public final fun <get-sourcesOutputDir> (): java.io.File declared in <root>.KaptOptions' type=java.io.File origin=GET_PROPERTY
+                  $this: CALL 'public final fun <get-options> (): <root>.KaptOptions declared in <root>.KaptContext' type=<root>.KaptOptions origin=GET_PROPERTY
+                    $this: GET_VAR '<this>: <root>.KaptContext declared in <root>.KaptContext' type=<root>.KaptContext origin=null
+              CALL 'local final fun deleteAndCreate (dir: java.io.File): kotlin.Unit declared in <root>.KaptContext' type=kotlin.Unit origin=null
+                dir: CALL 'public final fun <get-classesOutputDir> (): java.io.File declared in <root>.KaptOptions' type=java.io.File origin=GET_PROPERTY
+                  $this: CALL 'public final fun <get-options> (): <root>.KaptOptions declared in <root>.KaptContext' type=<root>.KaptOptions origin=GET_PROPERTY
+                    $this: GET_VAR '<this>: <root>.KaptContext declared in <root>.KaptContext' type=<root>.KaptContext origin=null
+              TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
+                BLOCK type=kotlin.Unit? origin=SAFE_CALL
+                  VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:java.io.File [val]
+                    CALL 'public final fun getKotlinGeneratedSourcesDirectory (): java.io.File declared in <root>.KaptOptions' type=java.io.File origin=null
+                      $this: CALL 'public final fun <get-options> (): <root>.KaptOptions declared in <root>.KaptContext' type=<root>.KaptOptions origin=GET_PROPERTY
+                        $this: GET_VAR '<this>: <root>.KaptContext declared in <root>.KaptContext' type=<root>.KaptContext origin=null
+                  WHEN type=kotlin.Unit? origin=null
+                    BRANCH
+                      if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                        arg0: GET_VAR 'val tmp_0: java.io.File [val] declared in <root>.KaptContext' type=java.io.File origin=null
+                        arg1: CONST Null type=kotlin.Nothing? value=null
+                      then: CONST Null type=kotlin.Nothing? value=null
+                    BRANCH
+                      if: CONST Boolean type=kotlin.Boolean value=true
+                      then: CALL 'public final fun let <T, R> (block: kotlin.Function1<T of kotlin.let, R of kotlin.let>): R of kotlin.let [inline] declared in kotlin' type=kotlin.Unit origin=null
+                        <T>: java.io.File
+                        <R>: kotlin.Unit
+                        $receiver: GET_VAR 'val tmp_0: java.io.File [val] declared in <root>.KaptContext' type=java.io.File origin=null
+                        block: FUN_EXPR type=kotlin.Function1<java.io.File, kotlin.Unit> origin=LAMBDA
+                          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (it:java.io.File) returnType:kotlin.Unit
+                            VALUE_PARAMETER name:it index:0 type:java.io.File
+                            BLOCK_BODY
+                              CALL 'local final fun deleteAndCreate (dir: java.io.File): kotlin.Unit declared in <root>.KaptContext' type=kotlin.Unit origin=null
+                                dir: GET_VAR 'it: java.io.File declared in <root>.KaptContext.<anonymous>' type=java.io.File origin=null
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+      VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
