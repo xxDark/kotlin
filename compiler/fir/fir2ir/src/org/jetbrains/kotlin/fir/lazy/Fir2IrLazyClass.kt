@@ -131,12 +131,17 @@ class Fir2IrLazyClass(
                 is FirSimpleFunction -> {
                     if (declaration.name !in processedNames) {
                         processedNames += declaration.name
-                        scope.processFunctionsByName(declaration.name) {
-                            if (it is FirNamedFunctionSymbol && it.callableId.classId == fir.symbol.classId) {
-                                if (it.isAbstractMethodOfAny()) {
-                                    return@processFunctionsByName
+                        if (fir.classKind == ClassKind.ENUM_CLASS && declaration.isStatic) {
+                            // Handle values() / valueOf() separately
+                            result += declarationStorage.getIrFunctionSymbol(declaration.symbol).owner
+                        } else {
+                            scope.processFunctionsByName(declaration.name) {
+                                if (it is FirNamedFunctionSymbol && it.callableId.classId == fir.symbol.classId) {
+                                    if (it.isAbstractMethodOfAny()) {
+                                        return@processFunctionsByName
+                                    }
+                                    result += declarationStorage.getIrFunctionSymbol(it).owner
                                 }
-                                result += declarationStorage.getIrFunctionSymbol(it).owner
                             }
                         }
                     }
