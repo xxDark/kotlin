@@ -227,9 +227,6 @@ sealed class FirEffectiveVisibilityImpl(
     }
 }
 
-//val FirMemberDeclaration.effectiveVisibility3: FirEffectiveVisibility
-//    get() = session.effectiveVisibilityResolver.resolveFor(this)
-
 fun FirMemberDeclaration.getEffectiveVisibility(
     session: FirSession,
     containingDeclarations: List<FirDeclaration>,

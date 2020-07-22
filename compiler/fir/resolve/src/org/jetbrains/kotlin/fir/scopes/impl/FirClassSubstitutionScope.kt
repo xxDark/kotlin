@@ -361,7 +361,6 @@ class FirClassSubstitutionScope(
         ): FirSimpleFunction {
             // TODO: consider using here some light-weight functions instead of pseudo-real FirMemberFunctionImpl
             // As second alternative, we can invent some light-weight kind of FirRegularClass
-            val isLocal = fakeOverrideSymbol.callableId.classId?.isLocal == true
             return buildSimpleFunction {
                 source = baseFunction.source
                 this.session = session
