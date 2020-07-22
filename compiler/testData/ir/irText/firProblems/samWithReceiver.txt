@@ -141,12 +141,11 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
               valueDescription: CONST String type=kotlin.String value="<name>"
               description: STRING_CONCATENATION type=kotlin.String
                 CONST String type=kotlin.String value="Preset name ("
-                CALL 'public open fun toString (): kotlin.String declared in kotlin.Any' type=kotlin.String origin=null
-                  $this: CALL 'public final fun joinToString <T> (separator: kotlin.CharSequence, prefix: kotlin.CharSequence, postfix: kotlin.CharSequence, limit: kotlin.Int, truncated: kotlin.CharSequence, transform: kotlin.Function1<T of kotlin.collections.joinToString, kotlin.CharSequence>?): kotlin.String declared in kotlin.collections' type=kotlin.String origin=null
-                    <T>: kotlin.String
-                    $receiver: CALL 'public abstract fun <get-keys> (): kotlin.collections.Set<K of kotlin.collections.Map> declared in kotlin.collections.Map' type=kotlin.collections.Set<kotlin.String> origin=GET_PROPERTY
-                      $this: CALL 'public final fun <get-SUPPORTED_PRESETS> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> origin=GET_PROPERTY
-                        $this: GET_VAR '<this>: <root>.SamWithReceiverCommandLineProcessor.Companion declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=<root>.SamWithReceiverCommandLineProcessor.Companion origin=null
+                CALL 'public final fun joinToString <T> (separator: kotlin.CharSequence, prefix: kotlin.CharSequence, postfix: kotlin.CharSequence, limit: kotlin.Int, truncated: kotlin.CharSequence, transform: kotlin.Function1<T of kotlin.collections.joinToString, kotlin.CharSequence>?): kotlin.String declared in kotlin.collections' type=kotlin.String origin=null
+                  <T>: kotlin.String
+                  $receiver: CALL 'public abstract fun <get-keys> (): kotlin.collections.Set<K of kotlin.collections.Map> declared in kotlin.collections.Map' type=kotlin.collections.Set<kotlin.String> origin=GET_PROPERTY
+                    $this: CALL 'public final fun <get-SUPPORTED_PRESETS> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> origin=GET_PROPERTY
+                      $this: GET_VAR '<this>: <root>.SamWithReceiverCommandLineProcessor.Companion declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=<root>.SamWithReceiverCommandLineProcessor.Companion origin=null
                 CONST String type=kotlin.String value=")"
               required: CONST Boolean type=kotlin.Boolean value=false
               allowMultipleOccurrences: CONST Boolean type=kotlin.Boolean value=true
@@ -334,7 +333,7 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
       FUN DEFAULT_PROPERTY_ACCESSOR name:<get-pluginJarFileFromIdea> visibility:public modality:ABSTRACT <> ($this:<root>.AbstractMavenImportHandler) returnType:kotlin.String
         correspondingProperty: PROPERTY name:pluginJarFileFromIdea visibility:public modality:ABSTRACT [val]
         $this: VALUE_PARAMETER name:<this> type:<root>.AbstractMavenImportHandler
-    FUN name:invoke visibility:public modality:OPEN <> ($this:<root>.AbstractMavenImportHandler, facet:<root>.KotlinFacet, mavenProject:<root>.MavenProject) returnType:kotlin.Unit
+    FUN name:invoke visibility:public modality:OPEN <> ($this:<root>.AbstractMavenImportHandler, facet:<root>.KotlinFacet, mavenProject:<root>.MavenProject) returnType:kotlin.Unit [operator]
       overridden:
         public abstract fun invoke (facet: <root>.KotlinFacet, mavenProject: <root>.MavenProject): kotlin.Unit [operator] declared in <root>.MavenProjectImportHandler
       $this: VALUE_PARAMETER name:<this> type:<root>.AbstractMavenImportHandler
@@ -347,16 +346,16 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
       VALUE_PARAMETER name:compilerPluginOptions index:1 type:kotlin.collections.List<kotlin.String>
     FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
       overridden:
-        public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in <root>.MavenProjectImportHandler
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
       VALUE_PARAMETER name:other index:0 type:kotlin.Any?
     FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
       overridden:
-        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+        public open fun hashCode (): kotlin.Int [fake_override] declared in <root>.MavenProjectImportHandler
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
     FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
       overridden:
-        public open fun toString (): kotlin.String declared in kotlin.Any
+        public open fun toString (): kotlin.String [fake_override] declared in <root>.MavenProjectImportHandler
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
   CLASS CLASS name:SamWithReceiverMavenProjectImportHandler modality:FINAL visibility:public superTypes:[<root>.AbstractMavenImportHandler]
     $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.SamWithReceiverMavenProjectImportHandler
@@ -375,10 +374,9 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
           EXPRESSION_BODY
             STRING_CONCATENATION type=kotlin.String
               CONST String type=kotlin.String value="sam-with-receiver:"
-              CALL 'public open fun toString (): kotlin.String declared in kotlin.Any' type=kotlin.String origin=null
-                $this: CALL 'public final fun <get-optionName> (): kotlin.String declared in <root>.CliOption' type=kotlin.String origin=GET_PROPERTY
-                  $this: CALL 'public final fun <get-ANNOTATION_OPTION> (): <root>.CliOption declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=<root>.CliOption origin=GET_PROPERTY
-                    $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverCommandLineProcessor.Companion
+              CALL 'public final fun <get-optionName> (): kotlin.String declared in <root>.CliOption' type=kotlin.String origin=GET_PROPERTY
+                $this: CALL 'public final fun <get-ANNOTATION_OPTION> (): <root>.CliOption declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=<root>.CliOption origin=GET_PROPERTY
+                  $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverCommandLineProcessor.Companion
               CONST String type=kotlin.String value="="
         FUN DEFAULT_PROPERTY_ACCESSOR name:<get-ANNOTATION_PARAMETER_PREFIX> visibility:public modality:FINAL <> ($this:<root>.SamWithReceiverMavenProjectImportHandler.Companion) returnType:kotlin.String
           correspondingProperty: PROPERTY name:ANNOTATION_PARAMETER_PREFIX visibility:public modality:FINAL [val]
@@ -400,60 +398,60 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
         overridden:
           public open fun toString (): kotlin.String declared in kotlin.Any
         $this: VALUE_PARAMETER name:<this> type:kotlin.Any
-    PROPERTY name:compilerPluginId visibility:public modality:FINAL [val]
+    PROPERTY name:compilerPluginId visibility:public modality:OPEN [val]
       FIELD PROPERTY_BACKING_FIELD name:compilerPluginId type:kotlin.String visibility:private [final]
         EXPRESSION_BODY
           CALL 'public final fun <get-PLUGIN_ID> (): kotlin.String declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=kotlin.String origin=GET_PROPERTY
             $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverCommandLineProcessor.Companion
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-compilerPluginId> visibility:public modality:FINAL <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
-        correspondingProperty: PROPERTY name:compilerPluginId visibility:public modality:FINAL [val]
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-compilerPluginId> visibility:public modality:OPEN <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
+        correspondingProperty: PROPERTY name:compilerPluginId visibility:public modality:OPEN [val]
         overridden:
           public abstract fun <get-compilerPluginId> (): kotlin.String declared in <root>.AbstractMavenImportHandler
         $this: VALUE_PARAMETER name:<this> type:<root>.SamWithReceiverMavenProjectImportHandler
         BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public final fun <get-compilerPluginId> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
+          RETURN type=kotlin.Nothing from='public open fun <get-compilerPluginId> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
             GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:compilerPluginId type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
               receiver: GET_VAR '<this>: <root>.SamWithReceiverMavenProjectImportHandler declared in <root>.SamWithReceiverMavenProjectImportHandler.<get-compilerPluginId>' type=<root>.SamWithReceiverMavenProjectImportHandler origin=null
-    PROPERTY name:pluginName visibility:public modality:FINAL [val]
+    PROPERTY name:pluginName visibility:public modality:OPEN [val]
       FIELD PROPERTY_BACKING_FIELD name:pluginName type:kotlin.String visibility:private [final]
         EXPRESSION_BODY
           CONST String type=kotlin.String value="samWithReceiver"
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-pluginName> visibility:public modality:FINAL <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
-        correspondingProperty: PROPERTY name:pluginName visibility:public modality:FINAL [val]
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-pluginName> visibility:public modality:OPEN <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
+        correspondingProperty: PROPERTY name:pluginName visibility:public modality:OPEN [val]
         overridden:
           public abstract fun <get-pluginName> (): kotlin.String declared in <root>.AbstractMavenImportHandler
         $this: VALUE_PARAMETER name:<this> type:<root>.SamWithReceiverMavenProjectImportHandler
         BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public final fun <get-pluginName> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
+          RETURN type=kotlin.Nothing from='public open fun <get-pluginName> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
             GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:pluginName type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
               receiver: GET_VAR '<this>: <root>.SamWithReceiverMavenProjectImportHandler declared in <root>.SamWithReceiverMavenProjectImportHandler.<get-pluginName>' type=<root>.SamWithReceiverMavenProjectImportHandler origin=null
-    PROPERTY name:mavenPluginArtifactName visibility:public modality:FINAL [val]
+    PROPERTY name:mavenPluginArtifactName visibility:public modality:OPEN [val]
       FIELD PROPERTY_BACKING_FIELD name:mavenPluginArtifactName type:kotlin.String visibility:private [final]
         EXPRESSION_BODY
           CONST String type=kotlin.String value="kotlin-maven-sam-with-receiver"
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-mavenPluginArtifactName> visibility:public modality:FINAL <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
-        correspondingProperty: PROPERTY name:mavenPluginArtifactName visibility:public modality:FINAL [val]
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-mavenPluginArtifactName> visibility:public modality:OPEN <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
+        correspondingProperty: PROPERTY name:mavenPluginArtifactName visibility:public modality:OPEN [val]
         overridden:
           public abstract fun <get-mavenPluginArtifactName> (): kotlin.String declared in <root>.AbstractMavenImportHandler
         $this: VALUE_PARAMETER name:<this> type:<root>.SamWithReceiverMavenProjectImportHandler
         BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public final fun <get-mavenPluginArtifactName> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
+          RETURN type=kotlin.Nothing from='public open fun <get-mavenPluginArtifactName> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
             GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:mavenPluginArtifactName type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
               receiver: GET_VAR '<this>: <root>.SamWithReceiverMavenProjectImportHandler declared in <root>.SamWithReceiverMavenProjectImportHandler.<get-mavenPluginArtifactName>' type=<root>.SamWithReceiverMavenProjectImportHandler origin=null
-    PROPERTY name:pluginJarFileFromIdea visibility:public modality:FINAL [val]
+    PROPERTY name:pluginJarFileFromIdea visibility:public modality:OPEN [val]
       FIELD PROPERTY_BACKING_FIELD name:pluginJarFileFromIdea type:kotlin.String visibility:private [final]
         EXPRESSION_BODY
           CONST String type=kotlin.String value="PathUtil.kotlinPathsForIdeaPlugin.samWithReceiverJarPath"
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-pluginJarFileFromIdea> visibility:public modality:FINAL <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
-        correspondingProperty: PROPERTY name:pluginJarFileFromIdea visibility:public modality:FINAL [val]
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-pluginJarFileFromIdea> visibility:public modality:OPEN <> ($this:<root>.SamWithReceiverMavenProjectImportHandler) returnType:kotlin.String
+        correspondingProperty: PROPERTY name:pluginJarFileFromIdea visibility:public modality:OPEN [val]
         overridden:
           public abstract fun <get-pluginJarFileFromIdea> (): kotlin.String declared in <root>.AbstractMavenImportHandler
         $this: VALUE_PARAMETER name:<this> type:<root>.SamWithReceiverMavenProjectImportHandler
         BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public final fun <get-pluginJarFileFromIdea> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
+          RETURN type=kotlin.Nothing from='public open fun <get-pluginJarFileFromIdea> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler'
             GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:pluginJarFileFromIdea type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
               receiver: GET_VAR '<this>: <root>.SamWithReceiverMavenProjectImportHandler declared in <root>.SamWithReceiverMavenProjectImportHandler.<get-pluginJarFileFromIdea>' type=<root>.SamWithReceiverMavenProjectImportHandler origin=null
-    FUN name:getOptions visibility:public modality:FINAL <> ($this:<root>.SamWithReceiverMavenProjectImportHandler, enabledCompilerPlugins:kotlin.collections.List<kotlin.String>, compilerPluginOptions:kotlin.collections.List<kotlin.String>) returnType:kotlin.collections.List<<root>.PluginOption>?
+    FUN name:getOptions visibility:public modality:OPEN <> ($this:<root>.SamWithReceiverMavenProjectImportHandler, enabledCompilerPlugins:kotlin.collections.List<kotlin.String>, compilerPluginOptions:kotlin.collections.List<kotlin.String>) returnType:kotlin.collections.List<<root>.PluginOption>?
       overridden:
         public abstract fun getOptions (enabledCompilerPlugins: kotlin.collections.List<kotlin.String>, compilerPluginOptions: kotlin.collections.List<kotlin.String>): kotlin.collections.List<<root>.PluginOption>? declared in <root>.AbstractMavenImportHandler
       $this: VALUE_PARAMETER name:<this> type:<root>.SamWithReceiverMavenProjectImportHandler
@@ -462,12 +460,13 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
       BLOCK_BODY
         WHEN type=kotlin.Unit origin=IF
           BRANCH
-            if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=null
-              $this: CALL 'public abstract fun contains (element: E of kotlin.collections.List): kotlin.Boolean [operator] declared in kotlin.collections.List' type=kotlin.Boolean origin=null
+            if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=NOT_IN
+              $this: CALL 'public abstract fun contains (element: E of kotlin.collections.List): kotlin.Boolean [operator] declared in kotlin.collections.List' type=kotlin.Boolean origin=NOT_IN
                 $this: GET_VAR 'enabledCompilerPlugins: kotlin.collections.List<kotlin.String> declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
                 element: CONST String type=kotlin.String value="sam-with-receiver"
-            then: RETURN type=kotlin.Nothing from='public final fun getOptions (enabledCompilerPlugins: kotlin.collections.List<kotlin.String>, compilerPluginOptions: kotlin.collections.List<kotlin.String>): kotlin.collections.List<<root>.PluginOption>? declared in <root>.SamWithReceiverMavenProjectImportHandler'
-              CONST Null type=kotlin.Nothing? value=null
+            then: BLOCK type=kotlin.Unit origin=null
+              RETURN type=kotlin.Nothing from='public open fun getOptions (enabledCompilerPlugins: kotlin.collections.List<kotlin.String>, compilerPluginOptions: kotlin.collections.List<kotlin.String>): kotlin.collections.List<<root>.PluginOption>? declared in <root>.SamWithReceiverMavenProjectImportHandler'
+                CONST Null type=kotlin.Nothing? value=null
         VAR name:annotations type:kotlin.collections.MutableList<kotlin.String> [val]
           CALL 'public final fun mutableListOf <T> (): kotlin.collections.MutableList<T of kotlin.collections.mutableListOf> [inline] declared in kotlin.collections' type=kotlin.collections.MutableList<kotlin.String> origin=null
             <T>: kotlin.String
@@ -482,53 +481,57 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
             condition: CALL 'public abstract fun hasNext (): kotlin.Boolean [operator] declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
               $this: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>>> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.Iterator<kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>>> origin=null
             body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
-              VAR FOR_LOOP_VARIABLE name:<destruct> type:kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> [val]
+              VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> [val]
                 CALL 'public abstract fun next (): T of kotlin.collections.Iterator [operator] declared in kotlin.collections.Iterator' type=kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> origin=FOR_LOOP_NEXT
                   $this: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>>> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.Iterator<kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>>> origin=null
               VAR name:presetName type:kotlin.String [val]
-                CALL 'public final fun component1 <K, V> (): K of kotlin.collections.component1 [inline,operator] declared in kotlin.collections' type=kotlin.String origin=null
+                CALL 'public final fun component1 <K, V> (): K of kotlin.collections.component1 [inline,operator] declared in kotlin.collections' type=kotlin.String origin=COMPONENT_N(index=1)
                   <K>: kotlin.String
                   <V>: kotlin.collections.List<kotlin.String>
-                  $receiver: GET_VAR 'val <destruct>: kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
+                  $receiver: GET_VAR 'val tmp_1: kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
               VAR name:presetAnnotations type:kotlin.collections.List<kotlin.String> [val]
-                CALL 'public final fun component2 <K, V> (): V of kotlin.collections.component2 [inline,operator] declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=null
+                CALL 'public final fun component2 <K, V> (): V of kotlin.collections.component2 [inline,operator] declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=COMPONENT_N(index=2)
                   <K>: kotlin.String
                   <V>: kotlin.collections.List<kotlin.String>
-                  $receiver: GET_VAR 'val <destruct>: kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
-              WHEN type=kotlin.Unit origin=IF
-                BRANCH
-                  if: CALL 'public abstract fun contains (element: E of kotlin.collections.List): kotlin.Boolean [operator] declared in kotlin.collections.List' type=kotlin.Boolean origin=null
-                    $this: GET_VAR 'enabledCompilerPlugins: kotlin.collections.List<kotlin.String> declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
-                    element: GET_VAR 'val presetName: kotlin.String [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.String origin=null
-                  then: CALL 'public abstract fun addAll (elements: kotlin.collections.Collection<E of kotlin.collections.MutableList>): kotlin.Boolean declared in kotlin.collections.MutableList' type=kotlin.Boolean origin=null
-                    $this: GET_VAR 'val annotations: kotlin.collections.MutableList<kotlin.String> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.MutableList<kotlin.String> origin=null
-                    elements: GET_VAR 'val presetAnnotations: kotlin.collections.List<kotlin.String> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
-        CALL 'public abstract fun addAll (elements: kotlin.collections.Collection<E of kotlin.collections.MutableList>): kotlin.Boolean declared in kotlin.collections.MutableList' type=kotlin.Boolean origin=null
-          $this: GET_VAR 'val annotations: kotlin.collections.MutableList<kotlin.String> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.MutableList<kotlin.String> origin=null
-          elements: CALL 'public final fun mapNotNull <T, R> (transform: kotlin.Function1<T of kotlin.collections.mapNotNull, R of kotlin.collections.mapNotNull?>): kotlin.collections.List<R of kotlin.collections.mapNotNull> [inline] declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=null
-            <T>: kotlin.String
-            <R>: kotlin.String
-            $receiver: GET_VAR 'compilerPluginOptions: kotlin.collections.List<kotlin.String> declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
-            transform: FUN_EXPR type=kotlin.Function1<kotlin.String, kotlin.String?> origin=LAMBDA
-              FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (text:kotlin.String) returnType:kotlin.String?
-                VALUE_PARAMETER name:text index:0 type:kotlin.String
-                BLOCK_BODY
-                  WHEN type=kotlin.Unit origin=IF
-                    BRANCH
-                      if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=null
-                        $this: CALL 'public final fun startsWith (prefix: kotlin.String, ignoreCase: kotlin.Boolean): kotlin.Boolean declared in kotlin.text' type=kotlin.Boolean origin=null
-                          $receiver: GET_VAR 'text: kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions.<anonymous>' type=kotlin.String origin=null
-                          prefix: CALL 'public final fun <get-ANNOTATION_PARAMETER_PREFIX> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.Companion' type=kotlin.String origin=GET_PROPERTY
+                  $receiver: GET_VAR 'val tmp_1: kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.Map.Entry<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
+              BLOCK type=kotlin.Unit origin=null
+                WHEN type=kotlin.Unit origin=IF
+                  BRANCH
+                    if: CALL 'public abstract fun contains (element: E of kotlin.collections.List): kotlin.Boolean [operator] declared in kotlin.collections.List' type=kotlin.Boolean origin=IN
+                      $this: GET_VAR 'enabledCompilerPlugins: kotlin.collections.List<kotlin.String> declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
+                      element: GET_VAR 'val presetName: kotlin.String [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.String origin=null
+                    then: BLOCK type=kotlin.Unit origin=null
+                      TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
+                        CALL 'public abstract fun addAll (elements: kotlin.collections.Collection<E of kotlin.collections.MutableList>): kotlin.Boolean declared in kotlin.collections.MutableList' type=kotlin.Boolean origin=null
+                          $this: GET_VAR 'val annotations: kotlin.collections.MutableList<kotlin.String> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.MutableList<kotlin.String> origin=null
+                          elements: GET_VAR 'val presetAnnotations: kotlin.collections.List<kotlin.String> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
+        TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
+          CALL 'public abstract fun addAll (elements: kotlin.collections.Collection<E of kotlin.collections.MutableList>): kotlin.Boolean declared in kotlin.collections.MutableList' type=kotlin.Boolean origin=null
+            $this: GET_VAR 'val annotations: kotlin.collections.MutableList<kotlin.String> [val] declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.MutableList<kotlin.String> origin=null
+            elements: CALL 'public final fun mapNotNull <T, R> (transform: kotlin.Function1<T of kotlin.collections.mapNotNull, R of kotlin.collections.mapNotNull?>): kotlin.collections.List<R of kotlin.collections.mapNotNull> [inline] declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=null
+              <T>: kotlin.String
+              <R>: kotlin.String
+              $receiver: GET_VAR 'compilerPluginOptions: kotlin.collections.List<kotlin.String> declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions' type=kotlin.collections.List<kotlin.String> origin=null
+              transform: FUN_EXPR type=kotlin.Function1<kotlin.String, kotlin.String?> origin=LAMBDA
+                FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (text:kotlin.String) returnType:kotlin.String?
+                  VALUE_PARAMETER name:text index:0 type:kotlin.String
+                  BLOCK_BODY
+                    WHEN type=kotlin.Unit origin=IF
+                      BRANCH
+                        if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCL
+                          $this: CALL 'public final fun startsWith (prefix: kotlin.String, ignoreCase: kotlin.Boolean): kotlin.Boolean declared in kotlin.text' type=kotlin.Boolean origin=null
+                            $receiver: GET_VAR 'text: kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions.<anonymous>' type=kotlin.String origin=null
+                            prefix: CALL 'public final fun <get-ANNOTATION_PARAMETER_PREFIX> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.Companion' type=kotlin.String origin=GET_PROPERTY
+                              $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:private [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverMavenProjectImportHandler.Companion
+                        then: RETURN type=kotlin.Nothing from='local final fun <anonymous> (text: kotlin.String): kotlin.String? declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions'
+                          CONST Null type=kotlin.Nothing? value=null
+                    RETURN type=kotlin.Nothing from='local final fun <anonymous> (text: kotlin.String): kotlin.String? declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions'
+                      CALL 'public final fun substring (startIndex: kotlin.Int): kotlin.String [inline] declared in kotlin.text' type=kotlin.String origin=null
+                        $receiver: GET_VAR 'text: kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions.<anonymous>' type=kotlin.String origin=null
+                        startIndex: CALL 'public open fun <get-length> (): kotlin.Int declared in kotlin.String' type=kotlin.Int origin=GET_PROPERTY
+                          $this: CALL 'public final fun <get-ANNOTATION_PARAMETER_PREFIX> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.Companion' type=kotlin.String origin=GET_PROPERTY
                             $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:private [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverMavenProjectImportHandler.Companion
-                      then: RETURN type=kotlin.Nothing from='local final fun <anonymous> (text: kotlin.String): kotlin.String? declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions'
-                        CONST Null type=kotlin.Nothing? value=null
-                  RETURN type=kotlin.Nothing from='local final fun <anonymous> (text: kotlin.String): kotlin.String? declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions'
-                    CALL 'public final fun substring (startIndex: kotlin.Int): kotlin.String [inline] declared in kotlin.text' type=kotlin.String origin=null
-                      $receiver: GET_VAR 'text: kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions.<anonymous>' type=kotlin.String origin=null
-                      startIndex: CALL 'public open fun <get-length> (): kotlin.Int declared in kotlin.String' type=kotlin.Int origin=GET_PROPERTY
-                        $this: CALL 'public final fun <get-ANNOTATION_PARAMETER_PREFIX> (): kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.Companion' type=kotlin.String origin=GET_PROPERTY
-                          $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:private [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverMavenProjectImportHandler.Companion
-        RETURN type=kotlin.Nothing from='public final fun getOptions (enabledCompilerPlugins: kotlin.collections.List<kotlin.String>, compilerPluginOptions: kotlin.collections.List<kotlin.String>): kotlin.collections.List<<root>.PluginOption>? declared in <root>.SamWithReceiverMavenProjectImportHandler'
+        RETURN type=kotlin.Nothing from='public open fun getOptions (enabledCompilerPlugins: kotlin.collections.List<kotlin.String>, compilerPluginOptions: kotlin.collections.List<kotlin.String>): kotlin.collections.List<<root>.PluginOption>? declared in <root>.SamWithReceiverMavenProjectImportHandler'
           CALL 'public final fun map <T, R> (transform: kotlin.Function1<T of kotlin.collections.map, R of kotlin.collections.map>): kotlin.collections.List<R of kotlin.collections.map> [inline] declared in kotlin.collections' type=kotlin.collections.List<<root>.PluginOption> origin=null
             <T>: kotlin.String
             <R>: <root>.PluginOption
@@ -543,22 +546,22 @@ FILE fqName:<root> fileName:/samWithReceiver.kt
                         $this: CALL 'public final fun <get-ANNOTATION_OPTION> (): <root>.CliOption declared in <root>.SamWithReceiverCommandLineProcessor.Companion' type=<root>.CliOption origin=GET_PROPERTY
                           $this: GET_OBJECT 'CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=<root>.SamWithReceiverCommandLineProcessor.Companion
                       annotation: GET_VAR 'it: kotlin.String declared in <root>.SamWithReceiverMavenProjectImportHandler.getOptions.<anonymous>' type=kotlin.String origin=null
-    FUN FAKE_OVERRIDE name:invoke visibility:public modality:OPEN <> ($this:<root>.AbstractMavenImportHandler, facet:<root>.KotlinFacet, mavenProject:<root>.MavenProject) returnType:kotlin.Unit [fake_override]
-      overridden:
-        public open fun invoke (facet: <root>.KotlinFacet, mavenProject: <root>.MavenProject): kotlin.Unit declared in <root>.AbstractMavenImportHandler
-      $this: VALUE_PARAMETER name:<this> type:<root>.AbstractMavenImportHandler
-      VALUE_PARAMETER name:facet index:0 type:<root>.KotlinFacet
-      VALUE_PARAMETER name:mavenProject index:1 type:<root>.MavenProject
     FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
       overridden:
-        public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in <root>.AbstractMavenImportHandler
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
       VALUE_PARAMETER name:other index:0 type:kotlin.Any?
     FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
       overridden:
-        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+        public open fun hashCode (): kotlin.Int [fake_override] declared in <root>.AbstractMavenImportHandler
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN FAKE_OVERRIDE name:invoke visibility:public modality:OPEN <> ($this:<root>.AbstractMavenImportHandler, facet:<root>.KotlinFacet, mavenProject:<root>.MavenProject) returnType:kotlin.Unit [fake_override,operator]
+      overridden:
+        public open fun invoke (facet: <root>.KotlinFacet, mavenProject: <root>.MavenProject): kotlin.Unit [operator] declared in <root>.AbstractMavenImportHandler
+      $this: VALUE_PARAMETER name:<this> type:<root>.AbstractMavenImportHandler
+      VALUE_PARAMETER name:facet index:0 type:<root>.KotlinFacet
+      VALUE_PARAMETER name:mavenProject index:1 type:<root>.MavenProject
     FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
       overridden:
-        public open fun toString (): kotlin.String declared in kotlin.Any
+        public open fun toString (): kotlin.String [fake_override] declared in <root>.AbstractMavenImportHandler
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
