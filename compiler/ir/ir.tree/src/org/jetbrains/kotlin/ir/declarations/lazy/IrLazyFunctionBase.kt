@@ -5,66 +5,45 @@
 
 package org.jetbrains.kotlin.ir.declarations.lazy
 
-import org.jetbrains.kotlin.descriptors.Visibility
+import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.descriptors.ReceiverParameterDescriptor
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
-import org.jetbrains.kotlin.ir.declarations.MetadataSource
-import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.types.IrType
-import org.jetbrains.kotlin.ir.util.DeclarationStubGenerator
-import org.jetbrains.kotlin.ir.util.TypeTranslator
-import org.jetbrains.kotlin.name.Name
+import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
 
-@OptIn(ObsoleteDescriptorBasedAPI::class)
-abstract class IrLazyFunctionBase(
-    startOffset: Int,
-    endOffset: Int,
-    origin: IrDeclarationOrigin,
-    override val name: Name,
-    override var visibility: Visibility,
-    override val isInline: Boolean,
-    override val isExternal: Boolean,
-    override val isExpect: Boolean,
-    stubGenerator: DeclarationStubGenerator,
-    typeTranslator: TypeTranslator
-) :
-    IrLazyDeclarationBase(startOffset, endOffset, origin, stubGenerator, typeTranslator),
-    IrFunction {
+interface IrLazyFunctionBase : IrLazyDeclarationBase {
+    @OptIn(ObsoleteDescriptorBasedAPI::class)
+    override val descriptor: FunctionDescriptor
 
-    val initialSignatureFunction: IrFunction? by lazyVar {
+    val initialSignatureFunction: IrFunction?
+
+    fun createInitialSignatureFunction(): ReadOnlyProperty<Any?, IrFunction?> = lazyVar {
         descriptor.initialSignatureDescriptor?.takeIf { it != descriptor }?.original?.let(stubGenerator::generateFunctionStub)
     }
+}
 
-    override var dispatchReceiverParameter: IrValueParameter? by lazyVar {
-        typeTranslator.buildWithScope(this) {
-            descriptor.dispatchReceiverParameter?.generateReceiverParameterStub()?.also { it.parent = this@IrLazyFunctionBase }
+internal fun <This> This.createValueParameters(): ReadWriteProperty<Any?, List<IrValueParameter>>
+        where This : IrLazyFunctionBase, This : IrFunction = lazyVar {
+    typeTranslator.buildWithScope(this) {
+        descriptor.valueParameters.mapTo(arrayListOf()) {
+            stubGenerator.generateValueParameterStub(it).apply { parent = this@createValueParameters }
         }
     }
-    override var extensionReceiverParameter: IrValueParameter? by lazyVar {
-        typeTranslator.buildWithScope(this) {
-            descriptor.extensionReceiverParameter?.generateReceiverParameterStub()?.also { it.parent = this@IrLazyFunctionBase }
-        }
+}
+
+internal fun <This> This.createReceiverParameter(parameter: ReceiverParameterDescriptor?): ReadWriteProperty<Any?, IrValueParameter?>
+        where This : IrLazyFunctionBase, This : IrFunction = lazyVar {
+    typeTranslator.buildWithScope(this) {
+        parameter?.generateReceiverParameterStub()?.also { it.parent = this@createReceiverParameter }
     }
+}
 
-    override var valueParameters: List<IrValueParameter> by lazyVar {
-        typeTranslator.buildWithScope(this) {
-            descriptor.valueParameters.mapTo(arrayListOf()) {
-                stubGenerator.generateValueParameterStub(it).apply { parent = this@IrLazyFunctionBase }
-            }
-        }
+internal fun <This> This.createReturnType(): ReadWriteProperty<Any?, IrType>
+        where This : IrLazyFunctionBase, This : IrFunction = lazyVar {
+    typeTranslator.buildWithScope(this) {
+        descriptor.returnType!!.toIrType()
     }
-
-    final override var body: IrBody? = null
-
-    final override var returnType: IrType by lazyVar {
-        typeTranslator.buildWithScope(this) {
-            descriptor.returnType!!.toIrType()
-        }
-    }
-
-    override var metadata: MetadataSource?
-        get() = null
-        set(_) = error("We should never need to store metadata of external declarations.")
 }

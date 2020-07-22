@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.lazy.lazyVar
 import org.jetbrains.kotlin.ir.expressions.IrBody
+import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrType
@@ -25,19 +26,21 @@ import org.jetbrains.kotlin.name.Name
 
 class Fir2IrLazySimpleFunction(
     components: Fir2IrComponents,
-    startOffset: Int,
-    endOffset: Int,
-    origin: IrDeclarationOrigin,
-    fir: FirSimpleFunction,
-    symbol: Fir2IrSimpleFunctionSymbol,
+    override val startOffset: Int,
+    override val endOffset: Int,
+    override var origin: IrDeclarationOrigin,
+    override val fir: FirSimpleFunction,
+    override val symbol: Fir2IrSimpleFunctionSymbol,
     override val isFakeOverride: Boolean
-) : AbstractFir2IrLazyDeclaration<FirSimpleFunction, IrSimpleFunction>(
-    components, startOffset, endOffset, origin, fir, symbol
-), IrSimpleFunction {
+) : IrSimpleFunction, AbstractFir2IrLazyDeclaration<FirSimpleFunction, IrSimpleFunction>, Fir2IrComponents by components {
     init {
         symbol.bind(this)
         classifierStorage.preCacheTypeParameters(fir)
     }
+
+    override var annotations: List<IrConstructorCall> by createLazyAnnotations()
+    override lateinit var typeParameters: List<IrTypeParameter>
+    override lateinit var parent: IrDeclarationParent
 
     override val isTailrec: Boolean
         get() = fir.isTailRec
@@ -53,10 +56,7 @@ class Fir2IrLazySimpleFunction(
 
     @ObsoleteDescriptorBasedAPI
     override val descriptor: FunctionDescriptor
-        get() = super.descriptor as FunctionDescriptor
-
-    override val symbol: Fir2IrSimpleFunctionSymbol
-        get() = super.symbol as Fir2IrSimpleFunctionSymbol
+        get() = symbol.descriptor
 
     override val isInline: Boolean
         get() = fir.isInline
