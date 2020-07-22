@@ -21,12 +21,18 @@ import org.jetbrains.kotlin.utils.SmartList
 private val SCRIPT_ORIGIN = object : IrDeclarationOriginImpl("FIELD_FOR_OBJECT_INSTANCE") {}
 
 class IrScriptImpl(
+    override val startOffset: Int,
+    override val endOffset: Int,
     override val symbol: IrScriptSymbol,
-    override val name: Name
-) : IrScript, IrDeclaration {
-    override val startOffset: Int get() = UNDEFINED_OFFSET
-    override val endOffset: Int get() = UNDEFINED_OFFSET
+    override val name: Name,
     override var origin: IrDeclarationOrigin = SCRIPT_ORIGIN
+) : IrScript, IrDeclaration {
+
+    constructor(symbol: IrScriptSymbol, name: Name) : this(UNDEFINED_OFFSET, UNDEFINED_OFFSET, symbol, name)
+
+    init {
+        symbol.bind(this)
+    }
 
     private var _parent: IrDeclarationParent? = null
     override var parent: IrDeclarationParent
@@ -45,10 +51,6 @@ class IrScriptImpl(
 
     @ObsoleteDescriptorBasedAPI
     override val descriptor: ScriptDescriptor = symbol.descriptor
-
-    init {
-        symbol.bind(this)
-    }
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitScript(this, data)

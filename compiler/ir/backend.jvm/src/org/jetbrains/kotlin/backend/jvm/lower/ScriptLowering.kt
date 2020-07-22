@@ -75,10 +75,11 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
             irScriptClass.parent = irFile
             irScriptClass.createImplicitParameterDeclarationWithWrappedDescriptor()
             val symbolRemapper = DeepCopySymbolRemapperToScriptClass(irScript.symbol, irScriptClass.symbol)
-            val deepCopyTransformer = DeepCopyIrTreeWithSymbols(symbolRemapper, DeepCopyTypeRemapper(symbolRemapper))
+            val typeRemapper = DeepCopyTypeRemapper(symbolRemapper)
+            val deepCopyTransformer = DeepCopyIrTreeWithSymbols(symbolRemapper, typeRemapper)
             irScriptClass.thisReceiver = irScript.thisReceiver.run {
                 acceptVoid(symbolRemapper)
-                transform(deepCopyTransformer, null)
+                transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrValueParameter
             }
             irScript.declarations.forEach {
                 it.acceptVoid(symbolRemapper)

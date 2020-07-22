@@ -28,6 +28,16 @@ interface FirMetadataSource : MetadataSource {
             get() = (klass as? FirRegularClass)?.name
     }
 
+    class Script(
+        val script: FirScript
+    ) : FirMetadataSource {
+        override val session: FirSession
+            get() = script.session
+
+        override val name: Name?
+            get() = script.name
+    }
+
     class Function(
         val function: FirFunction<*>
     ) : FirMetadataSource {

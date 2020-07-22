@@ -659,6 +659,113 @@ open class WrappedClassDescriptor(
     }
 }
 
+@OptIn(ObsoleteDescriptorBasedAPI::class)
+open class WrappedScriptDescriptor(
+    annotations: Annotations = Annotations.EMPTY,
+    val sourceElement: SourceElement = SourceElement.NO_SOURCE
+) : ScriptDescriptor, WrappedDeclarationDescriptor<IrScript>(annotations) {
+    override fun getName() = owner.name
+
+    override fun getMemberScope(typeArguments: MutableList<out TypeProjection>) = MemberScope.Empty
+
+    override fun getMemberScope(typeSubstitution: TypeSubstitution) = MemberScope.Empty
+
+    override fun getUnsubstitutedMemberScope() = MemberScope.Empty
+
+    override fun getUnsubstitutedInnerClassesScope() = MemberScope.Empty
+
+    override fun getStaticScope() = MemberScope.Empty
+
+    override fun getSource() = sourceElement
+
+    override fun getConstructors() =
+        owner.declarations.filterIsInstance<IrConstructor>().filter { !it.origin.isSynthetic }.map { it.descriptor }.toList()
+
+    override fun getContainingDeclaration() = (owner.parent as IrSymbolOwner).symbol.descriptor
+
+    private val _defaultType: SimpleType by lazy {
+        TypeUtils.makeUnsubstitutedType(this, unsubstitutedMemberScope, KotlinTypeFactory.EMPTY_REFINED_TYPE_FACTORY)
+    }
+
+    override fun getDefaultType(): SimpleType = _defaultType
+
+    override fun getKind() = TODO()
+
+    override fun getModality() = TODO()
+
+    override fun getCompanionObjectDescriptor() = owner.declarations.filterIsInstance<IrClass>().firstOrNull { it.isCompanion }?.descriptor
+
+    override fun getVisibility() = TODO()
+
+    override fun isCompanionObject() = false
+
+    override fun isData() = false
+
+    override fun isInline() = false
+
+    override fun isFun() = false
+
+    override fun getThisAsReceiverParameter() = owner.thisReceiver?.descriptor as ReceiverParameterDescriptor
+
+    override fun getUnsubstitutedPrimaryConstructor() = TODO()
+
+    override fun getDeclaredTypeParameters() = TODO()
+
+    override fun getSealedSubclasses(): Collection<ClassDescriptor> {
+        TODO("not implemented")
+    }
+
+    override fun getOriginal() = this
+
+    override fun isExpect() = false
+
+    override fun substitute(substitutor: TypeSubstitutor): ClassifierDescriptorWithTypeParameters =
+        throw UnsupportedOperationException("Wrapped descriptors SHOULD NOT be substituted")
+
+    override fun isInner(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isActual() = false
+
+    override fun isExternal(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun getTypeConstructor(): TypeConstructor = TODO()
+
+    override fun <R : Any?, D : Any?> accept(visitor: DeclarationDescriptorVisitor<R, D>?, data: D): R =
+        visitor!!.visitClassDescriptor(this, data)
+
+    override fun acceptVoid(visitor: DeclarationDescriptorVisitor<Void, Void>?) {
+        visitor!!.visitClassDescriptor(this, null)
+    }
+
+    override fun getDefaultFunctionTypeForSamInterface(): SimpleType? {
+        TODO("not implemented")
+    }
+
+    override fun isDefinitelyNotSamInterface(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPriority(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun getImplicitReceivers(): MutableList<ClassDescriptor> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getScriptProvidedProperties(): MutableList<PropertyDescriptor> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getResultValue(): PropertyDescriptor? {
+        TODO("Not yet implemented")
+    }
+}
+
 class LazyTypeConstructor(
     val classDescriptor: ClassDescriptor,
     val parametersBuilder: () -> List<TypeParameterDescriptor>,
