@@ -12,11 +12,13 @@ import com.intellij.debugger.engine.DebugProcess
 import com.intellij.debugger.engine.DebugProcessImpl
 import com.intellij.debugger.engine.PositionManagerEx
 import com.intellij.debugger.engine.evaluation.EvaluationContext
+import com.intellij.debugger.engine.jdi.VirtualMachineProxy
 import com.intellij.debugger.impl.DebuggerUtilsEx
 import com.intellij.debugger.jdi.StackFrameProxyImpl
 import com.intellij.debugger.jdi.VirtualMachineProxyImpl
 import com.intellij.debugger.requests.ClassPrepareRequestor
 import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -31,7 +33,6 @@ import com.intellij.psi.impl.compiled.ClsFileImpl
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ThreeState
-import com.intellij.workspace.api.toVirtualFileUrl
 import com.intellij.xdebugger.frame.XStackFrame
 import com.sun.jdi.*
 import com.sun.jdi.request.ClassPrepareRequest
@@ -44,6 +45,7 @@ import org.jetbrains.kotlin.idea.debugger.breakpoints.getLambdasAtLineIfAny
 import org.jetbrains.kotlin.idea.debugger.evaluate.KotlinDebuggerCaches
 import org.jetbrains.kotlin.idea.debugger.stackFrame.KotlinStackFrame
 import org.jetbrains.kotlin.idea.decompiler.classFile.KtClsFile
+import org.jetbrains.kotlin.idea.inline.INLINE_USE_IDENTIFIER
 import org.jetbrains.kotlin.idea.stubindex.KotlinSourceFilterScope
 import org.jetbrains.kotlin.idea.util.ProjectRootsUtil
 import org.jetbrains.kotlin.idea.util.application.runReadAction
@@ -53,6 +55,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.resolve.inline.InlineUtil
 import org.jetbrains.kotlin.resolve.jvm.JvmClassName
+import java.lang.reflect.Field
 import java.nio.file.Paths
 import java.util.ArrayList
 import kotlin.Comparator
@@ -370,21 +373,39 @@ class KotlinPositionManager(private val myDebugProcess: DebugProcess) : MultiReq
             return myDebugProcess.searchScope
 
         val vmProxy = myDebugProcess.virtualMachineProxy
+        val module = guessModuleByVM(vmProxy)
+        return module?.getModuleWithDependenciesAndLibrariesScope(true) ?: myDebugProcess.searchScope
+    }
+
+    private fun guessModuleByVM(vmProxy: VirtualMachineProxy): Module? {
         if (vmProxy is VirtualMachineProxyImpl) {
             val vm = vmProxy.virtualMachine
             if (vm is PathSearchingVirtualMachine) {
                 val baseDirectory = vm.baseDirectory()
-                return findModuleByPath(myDebugProcess.project, baseDirectory) ?: myDebugProcess.searchScope
+                val classPaths = vm.classPath()
+                val pathInfo: Field = vm.javaClass.getDeclaredField("pathInfo")
+                pathInfo.setAccessible(true)
+                val pathInfoValue = pathInfo.get(vm)
+                val bootclasspaths = pathInfoValue.javaClass.getDeclaredField("bootclasspaths")
+                bootclasspaths.setAccessible(true)
+                val bootclasspathsValue = bootclasspaths.get(pathInfoValue) as List<String>
+                val path = (classPaths + bootclasspathsValue).find { it.endsWith(INLINE_USE_IDENTIFIER) }
+                val module = path?.let {
+                    findModuleByPath(myDebugProcess.project, path.removeSuffix(INLINE_USE_IDENTIFIER))
+                } ?: baseDirectory?.let {
+                    findModuleByPath(myDebugProcess.project, baseDirectory)
+                }
+                return module
             }
         }
-        return myDebugProcess.searchScope
+        return null
     }
 }
 
-fun findModuleByPath(project: Project, path: String): GlobalSearchScope? {
+
+fun findModuleByPath(project: Project, path: String): Module? {
     val vf = VfsUtil.findFile(Paths.get(path), true) ?: return null
-    val module = ProjectFileIndex.getInstance(project).getModuleForFile(vf)
-    return module?.getModuleWithDependenciesAndLibrariesScope(true)
+    return ProjectFileIndex.getInstance(project).getModuleForFile(vf)
 }
 
 inline fun <U, V> U.readAction(crossinline f: (U) -> V): V {
