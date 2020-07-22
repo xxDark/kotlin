@@ -8,15 +8,15 @@ package org.jetbrains.kotlin.fir.analysis.checkers.declaration
 object CommonDeclarationCheckers : DeclarationCheckers() {
     override val declarationCheckers: List<FirBasicDeclarationChecker> = listOf(
         FirAnnotationClassDeclarationChecker,
-        FirModifierChecker
+        FirModifierChecker,
     )
 
     override val memberDeclarationCheckers: List<FirMemberDeclarationChecker> = listOf(
         FirInfixFunctionDeclarationChecker,
-        FirExposedVisibilityChecker
+        FirExposedVisibilityChecker,
     )
 
     override val constructorCheckers: List<FirConstructorChecker> = listOf(
-        FirConstructorAllowedChecker
+        FirConstructorAllowedChecker,
     )
 }
