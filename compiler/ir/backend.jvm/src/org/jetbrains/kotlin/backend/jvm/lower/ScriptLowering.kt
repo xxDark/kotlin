@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.backend.jvm.lower
 
 import org.jetbrains.kotlin.backend.common.FileLoweringPass
+import org.jetbrains.kotlin.backend.common.ir.copyTo
 import org.jetbrains.kotlin.backend.common.ir.createImplicitParameterDeclarationWithWrappedDescriptor
 import org.jetbrains.kotlin.backend.common.lower.createIrBuilder
 import org.jetbrains.kotlin.backend.common.phaser.makeIrModulePhase
@@ -15,28 +16,27 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
-import org.jetbrains.kotlin.ir.builders.declarations.addConstructor
-import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
+import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
+import org.jetbrains.kotlin.ir.builders.declarations.*
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irDelegatingConstructorCall
 import org.jetbrains.kotlin.ir.declarations.*
-import org.jetbrains.kotlin.ir.declarations.impl.IrAnonymousInitializerImpl
 import org.jetbrains.kotlin.ir.declarations.impl.IrClassImpl
 import org.jetbrains.kotlin.ir.descriptors.WrappedClassDescriptor
-import org.jetbrains.kotlin.ir.expressions.impl.IrInstanceInitializerCallImpl
+import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
+import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
-import org.jetbrains.kotlin.ir.symbols.impl.IrAnonymousInitializerSymbolImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrClassSymbolImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrScriptSymbolImpl
-import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
-import org.jetbrains.kotlin.psi.psiUtil.pureEndOffset
-import org.jetbrains.kotlin.psi.psiUtil.pureStartOffset
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.psi.psiUtil.endOffset
+import org.jetbrains.kotlin.psi.psiUtil.startOffsetSkippingComments
 import org.jetbrains.kotlin.psi2ir.PsiSourceManager
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 
@@ -86,26 +86,61 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                 val copy = it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrDeclaration
                 irScriptClass.declarations.add(copy)
             }
-//            val initializer =
-//                IrAnonymousInitializerImpl(
-//                    irScript.startOffset, irScript.endOffset,
-//                    IrDeclarationOrigin.SCRIPT_STATEMENT,
-//                    IrAnonymousInitializerSymbolImpl(descriptor)
-//                ).apply {
-//                    body = context.createIrBuilder(this.symbol).irBlockBody {
-//                        irScript.statements.forEach {
-//                            it.acceptVoid(symbolRemapper)
-//                            +((it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass)) as IrStatement)
-//                        }
-//                    }
-//                    parent = irScriptClass
-//                }
-//            irScriptClass.declarations.add(initializer)
             irScriptClass.addConstructor {
                 isPrimary = true
-            }.apply {
-                addValueParameter(name = "args", type = context.irBuiltIns.arrayClass.typeWith(context.irBuiltIns.stringType))
-                body = context.createIrBuilder(this.symbol).irBlockBody {
+            }.also { irConstructor ->
+                irScript.explicitCallParameters.forEach { scriptCallParameter ->
+                    val callParameter = irConstructor.addValueParameter {
+                        updateFrom(scriptCallParameter)
+                        name = scriptCallParameter.name
+                    }
+                    irScriptClass.addProperty {
+                        updateFrom(callParameter)
+                        name = callParameter.name
+                    }.also { property ->
+                        property.backingField = buildField {
+                            name = callParameter.name
+                            type = callParameter.type
+                            visibility = Visibilities.PROTECTED
+                        }.also { field ->
+                            field.parent = irScriptClass
+                            field.initializer = IrExpressionBodyImpl(
+                                IrGetValueImpl(
+                                    callParameter.startOffset, callParameter.endOffset,
+                                    callParameter.type,
+                                    callParameter.symbol,
+                                    IrStatementOrigin.INITIALIZE_PROPERTY_FROM_PARAMETER
+                                )
+                            )
+
+//                            val getter = property.addGetter() {
+//                                returnType = callParameter.type
+//                            }
+//                            getter.dispatchReceiverParameter = irScriptClass.thisReceiver!!.copyTo(getter)
+//
+//                            getter.body = IrBlockBodyImpl(
+//                                UNDEFINED_OFFSET, UNDEFINED_OFFSET, listOf(
+//                                    IrReturnImpl(
+//                                        callParameter.startOffset, callParameter.endOffset, context.irBuiltIns.nothingType,
+//                                        getter.symbol,
+//                                        IrGetFieldImpl(
+//                                            callParameter.startOffset, callParameter.endOffset,
+//                                            field.symbol,
+//                                            callParameter.type,
+//                                            IrGetValueImpl(
+//                                                callParameter.startOffset, callParameter.endOffset,
+//                                                irScriptClass.thisReceiver!!.type,
+//                                                irScriptClass.thisReceiver!!.symbol
+//                                            )
+//                                        )
+//                                    )
+//                                )
+//                            )
+                        }
+                    }
+                }
+
+                irConstructor.body = context.createIrBuilder(irConstructor.symbol).irBlockBody {
                     +irDelegatingConstructorCall(context.irBuiltIns.anyClass.owner.constructors.single())
                     +IrInstanceInitializerCallImpl(
                         irScript.startOffset, irScript.endOffset,

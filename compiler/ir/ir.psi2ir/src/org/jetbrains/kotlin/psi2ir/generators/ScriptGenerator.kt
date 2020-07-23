@@ -5,9 +5,9 @@
 
 package org.jetbrains.kotlin.psi2ir.generators
 
-import org.jetbrains.kotlin.descriptors.ScriptDescriptor
-import org.jetbrains.kotlin.ir.declarations.IrDeclaration
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
+import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.ir.declarations.*
+import org.jetbrains.kotlin.ir.util.varargElementType
 import org.jetbrains.kotlin.psi.KtScript
 import org.jetbrains.kotlin.psi.KtScriptInitializer
 import org.jetbrains.kotlin.psi.psiUtil.pureEndOffset
@@ -29,12 +29,20 @@ class ScriptGenerator(declarationGenerator: DeclarationGenerator) : DeclarationG
             val startOffset = ktScript.pureStartOffset
             val endOffset = ktScript.pureEndOffset
 
-            irScript.thisReceiver = context.symbolTable.declareValueParameter(
-                startOffset, endOffset,
-                IrDeclarationOrigin.INSTANCE_RECEIVER,
-                descriptor.thisAsReceiverParameter,
-                descriptor.thisAsReceiverParameter.type.toIrType()
-            ).also { it.parent = irScript }
+            fun makeReceiver(descriptor: ClassDescriptor): IrValueParameter {
+                val receiverParameterDescriptor = descriptor.thisAsReceiverParameter
+                return context.symbolTable.declareValueParameter(
+                    startOffset, endOffset,
+                    IrDeclarationOrigin.INSTANCE_RECEIVER,
+                    receiverParameterDescriptor,
+                    receiverParameterDescriptor.type.toIrType()
+                ).also { it.parent = irScript }
+            }
+
+            irScript.thisReceiver = makeReceiver(descriptor)
+
+            irScript.baseClass = descriptor.typeConstructor.supertypes.single().toIrType()
+            irScript.implicitReceivers = descriptor.implicitReceivers.map(::makeReceiver)
 
             for (d in ktScript.declarations) {
                 if (d is KtScriptInitializer) irScript.statements += BodyGenerator(
@@ -43,6 +51,43 @@ class ScriptGenerator(declarationGenerator: DeclarationGenerator) : DeclarationG
                 ).generateExpressionBody(d.body!!).expression
                 else irScript.declarations += declarationGenerator.generateMemberDeclaration(d)!!
             }
+
+            descriptor.resultValue?.let { resultDescriptor ->
+                val resultProperty = resultDescriptor.toIrProperty(startOffset, endOffset, IrDeclarationOrigin.SCRIPT_RESULT_PROPERTY)
+                irScript.declarations += resultProperty
+                irScript.resultProperty = resultProperty.symbol
+            }
+
+            irScript.explicitCallParameters = descriptor.unsubstitutedPrimaryConstructor.valueParameters.map { valueParameterDescriptor ->
+                valueParameterDescriptor.toIrValueParameter(startOffset, endOffset, IrDeclarationOrigin.SCRIPT_CALL_PARAMETER).also {
+//                    irScript.declarations += it
+                }
+            }
+
+            irScript.implicitReceivers = descriptor.implicitReceivers.map { implicitReceiver ->
+                implicitReceiver.thisAsReceiverParameter.toIrValueParameter(startOffset, endOffset, IrDeclarationOrigin.SCRIPT_IMPLICIT_RECEIVER)
+            }
+
+            irScript.providedProperties = descriptor.scriptProvidedProperties.map { providedProperty ->
+                val irProperty =  providedProperty.toIrProperty(startOffset, endOffset, IrDeclarationOrigin.SCRIPT_PROVIDED_PROPERTY)
+                irScript.declarations += irProperty
+                irProperty.symbol
+            }
         }
     }
+
+    private fun PropertyDescriptor.toIrProperty(startOffset: Int, endOffset: Int, origin: IrDeclarationOrigin): IrProperty =
+        context.symbolTable.declareProperty(
+            startOffset, endOffset, origin,
+            this,
+            isDelegated = false
+        )
+
+    private fun ParameterDescriptor.toIrValueParameter(startOffset: Int, endOffset: Int, origin: IrDeclarationOrigin) =
+        context.symbolTable.declareValueParameter(
+            startOffset, endOffset, origin,
+            this,
+            type.toIrType(),
+            varargElementType?.toIrType()
+        )
 }
