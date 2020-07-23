@@ -105,11 +105,12 @@ internal fun JavaClassifierType.toFirResolvedTypeRef(
 
 internal fun JavaType?.toConeKotlinTypeWithoutEnhancement(
     session: FirSession,
-    javaTypeParameterStack: JavaTypeParameterStack
+    javaTypeParameterStack: JavaTypeParameterStack,
+    forAnnotationValueParameter: Boolean = false
 ): ConeKotlinType {
     return when (this) {
         is JavaClassifierType -> {
-            toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack)
+            toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack, forAnnotationValueParameter = forAnnotationValueParameter)
         }
         is JavaPrimitiveType -> {
             val primitiveType = type
@@ -122,7 +123,7 @@ internal fun JavaType?.toConeKotlinTypeWithoutEnhancement(
             classId.toConeKotlinType(emptyArray(), isNullable = false)
         }
         is JavaArrayType -> {
-            toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack)
+            toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack, forAnnotationValueParameter)
         }
         is JavaWildcardType -> bound?.toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack) ?: run {
             StandardClassIds.Any.toConeFlexibleType(emptyArray())
@@ -136,12 +137,13 @@ internal fun JavaType?.toConeKotlinTypeWithoutEnhancement(
 
 private fun JavaArrayType.toConeKotlinTypeWithoutEnhancement(
     session: FirSession,
-    javaTypeParameterStack: JavaTypeParameterStack
+    javaTypeParameterStack: JavaTypeParameterStack,
+    forAnnotationValueParameter: Boolean = false
 ): ConeFlexibleType {
     val componentType = componentType
     return if (componentType !is JavaPrimitiveType) {
         val classId = StandardClassIds.Array
-        val argumentType = componentType.toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack)
+        val argumentType = componentType.toConeKotlinTypeWithoutEnhancement(session, javaTypeParameterStack, forAnnotationValueParameter)
         classId.toConeFlexibleType(
             arrayOf(argumentType),
             typeArgumentsForUpper = arrayOf(ConeKotlinTypeProjectionOut(argumentType))
@@ -165,12 +167,24 @@ private fun ClassId.toConeFlexibleType(
 private fun JavaClassifierType.toConeKotlinTypeWithoutEnhancement(
     session: FirSession,
     javaTypeParameterStack: JavaTypeParameterStack,
-    forTypeParameterBounds: Boolean = false
+    forTypeParameterBounds: Boolean = false,
+    forAnnotationValueParameter: Boolean = false
 ): ConeKotlinType {
-    val lowerBound = toConeKotlinTypeForFlexibleBound(session, javaTypeParameterStack, isLowerBound = true, forTypeParameterBounds)
+    val lowerBound = toConeKotlinTypeForFlexibleBound(
+        session,
+        javaTypeParameterStack,
+        isLowerBound = true,
+        forTypeParameterBounds,
+        forAnnotationValueParameter = forAnnotationValueParameter
+    )
     val upperBound =
         toConeKotlinTypeForFlexibleBound(
-            session, javaTypeParameterStack, isLowerBound = false, forTypeParameterBounds, lowerBound
+            session,
+            javaTypeParameterStack,
+            isLowerBound = false,
+            forTypeParameterBounds,
+            lowerBound,
+            forAnnotationValueParameter = forAnnotationValueParameter
         )
 
     return if (isRaw) ConeRawType(lowerBound, upperBound) else ConeFlexibleType(lowerBound, upperBound)
@@ -269,12 +283,17 @@ private fun JavaClassifierType.toConeKotlinTypeForFlexibleBound(
     javaTypeParameterStack: JavaTypeParameterStack,
     isLowerBound: Boolean,
     forTypeParameterBounds: Boolean,
-    lowerBound: ConeLookupTagBasedType? = null
+    lowerBound: ConeLookupTagBasedType? = null,
+    forAnnotationValueParameter: Boolean = false
 ): ConeLookupTagBasedType {
     return when (val classifier = classifier) {
         is JavaClass -> {
             //val classId = classifier.classId!!
-            var classId = JavaToKotlinClassMap.mapJavaToKotlin(classifier.fqName!!) ?: classifier.classId!!
+            var classId = if (forAnnotationValueParameter) {
+                JavaToKotlinClassMap.mapJavaToKotlinIncludingClassMapping(classifier.fqName!!)
+            } else {
+                JavaToKotlinClassMap.mapJavaToKotlin(classifier.fqName!!)
+            } ?: classifier.classId!!
 
             if (isLowerBound) {
                 classId = classId.readOnlyToMutable() ?: classId
