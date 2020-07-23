@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.fir.resolve.buildUseSiteMemberScope
 import org.jetbrains.kotlin.fir.symbols.Fir2IrClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
+import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.isNullableAny
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.declarations.*
@@ -131,8 +132,11 @@ class Fir2IrLazyClass(
                 is FirSimpleFunction -> {
                     if (declaration.name !in processedNames) {
                         processedNames += declaration.name
-                        if (fir.classKind == ClassKind.ENUM_CLASS && declaration.isStatic) {
+                        if (fir.classKind == ClassKind.ENUM_CLASS && declaration.isStatic &&
+                            declaration.returnTypeRef is FirResolvedTypeRef
+                        ) {
                             // Handle values() / valueOf() separately
+                            // TODO: handle other static functions / properties properly
                             result += declarationStorage.getIrFunctionSymbol(declaration.symbol).owner
                         } else {
                             scope.processFunctionsByName(declaration.name) {
