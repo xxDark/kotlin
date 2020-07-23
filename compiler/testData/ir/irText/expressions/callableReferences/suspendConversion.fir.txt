@@ -59,30 +59,29 @@ FILE fqName:<root> fileName:/suspendConversion.kt
         fn: FUNCTION_REFERENCE 'public final fun foo0 (): kotlin.Unit [suspend] declared in <root>' type=kotlin.reflect.KSuspendFunction0<kotlin.Unit> origin=null reflectionTarget=<same>
   FUN name:testSuspendPlain visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspend]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun foo1 (): kotlin.Unit declared in <root>' type=kotlin.reflect.KFunction0<kotlin.Unit> origin=null reflectionTarget=<same>
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspend>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: ::<Unresolved reference: foo1>#' type=IrErrorType
   FUN name:testSuspendWithArgs visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspendInt]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun fooInt (x: kotlin.Int): kotlin.Unit declared in <root>' type=kotlin.reflect.KFunction1<kotlin.Int, kotlin.Unit> origin=null reflectionTarget=<same>
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspendInt>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: ::<Unresolved reference: fooInt>#' type=IrErrorType
   FUN name:testWithVararg visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspend]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun foo2 (vararg xs: kotlin.Int): kotlin.Unit declared in <root>' type=kotlin.reflect.KFunction1<kotlin.IntArray, kotlin.Unit> origin=null reflectionTarget=<same>
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspend>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: ::<Unresolved reference: foo2>#' type=IrErrorType
   FUN name:testWithVarargMapped visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspendInt]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun foo2 (vararg xs: kotlin.Int): kotlin.Unit declared in <root>' type=kotlin.reflect.KFunction1<kotlin.IntArray, kotlin.Unit> origin=null reflectionTarget=<same>
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspendInt>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: ::<Unresolved reference: foo2>#' type=IrErrorType
   FUN name:testWithCoercionToUnit visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspend]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun foo3 (): kotlin.Int declared in <root>' type=kotlin.reflect.KFunction0<kotlin.Int> origin=null reflectionTarget=<same>
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspend>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: ::<Unresolved reference: foo3>#' type=IrErrorType
   FUN name:testWithDefaults visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspend]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun foo4 (i: kotlin.Int): kotlin.Unit declared in <root>' type=kotlin.reflect.KFunction1<kotlin.Int, kotlin.Unit> origin=null reflectionTarget=<same>
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspend>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: ::<Unresolved reference: foo4>#' type=IrErrorType
   FUN name:testWithBoundReceiver visibility:public modality:FINAL <> () returnType:kotlin.Unit
     BLOCK_BODY
-      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): [/useSuspend]>#' type=IrErrorType
-        FUNCTION_REFERENCE 'public final fun bar (): kotlin.Unit declared in <root>.C' type=kotlin.reflect.KFunction0<kotlin.Unit> origin=null reflectionTarget=<same>
-          $this: CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in <root>.C' type=<root>.C origin=null
+      ERROR_CALL 'Unresolved reference: <Inapplicable(INAPPLICABLE): /useSuspend>#' type=kotlin.Unit
+        ERROR_CALL 'Unsupported callable reference: R|/C.C|()::<Unresolved reference: bar>#' type=IrErrorType
