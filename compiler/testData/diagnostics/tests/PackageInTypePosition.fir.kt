@@ -6,4 +6,4 @@ package foo
 
 // FILE: b.kt
 
-@foo fun bar(p: foo): foo = null!!
+<!UNRESOLVED_REFERENCE!>@foo<!> fun bar(p: foo): foo = null!!

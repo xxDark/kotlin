@@ -16,7 +16,6 @@ import org.jetbrains.kotlin.fir.references.FirResolvedNamedReference
 import org.jetbrains.kotlin.fir.references.FirSuperReference
 import org.jetbrains.kotlin.fir.render
 import org.jetbrains.kotlin.fir.resolve.calls.isFunctional
-import org.jetbrains.kotlin.fir.resolve.getCorrespondingConstructorReferenceOrNull
 import org.jetbrains.kotlin.fir.resolve.inference.isBuiltinFunctionalType
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
@@ -325,7 +324,7 @@ class CallAndReferenceGenerator(
                         val calleeReference = when (call) {
                             is FirFunctionCall -> call.calleeReference
                             is FirDelegatedConstructorCall -> call.calleeReference
-                            is FirAnnotationCall -> call.getCorrespondingConstructorReferenceOrNull(session)
+                            is FirAnnotationCall -> call.calleeReference
                             else -> null
                         } as? FirResolvedNamedReference
                         val function = (calleeReference?.resolvedSymbol as? FirFunctionSymbol<*>)?.fir
