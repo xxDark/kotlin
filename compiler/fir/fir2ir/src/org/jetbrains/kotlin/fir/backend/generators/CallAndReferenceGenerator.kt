@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.fir.resolve.calls.isFunctional
 import org.jetbrains.kotlin.fir.resolve.inference.isBuiltinFunctionalType
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirConstructorSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 import org.jetbrains.kotlin.fir.types.*
@@ -252,16 +253,14 @@ class CallAndReferenceGenerator(
 
     fun convertToIrConstructorCall(annotationCall: FirAnnotationCall): IrExpression {
         val coneType = annotationCall.annotationTypeRef.coneTypeSafe<ConeLookupTagBasedType>()
-        val firSymbol = coneType?.lookupTag?.toSymbol(session) as? FirClassSymbol
         val type = coneType?.toIrType()
         val symbol = type?.classifierOrNull
         return annotationCall.convertWithOffsets { startOffset, endOffset ->
             when (symbol) {
                 is IrClassSymbol -> {
                     val irClass = symbol.owner
-                    val fir = firSymbol?.fir as? FirClass<*>
-                    val irConstructor = fir?.getPrimaryConstructorIfAny()?.let { firConstructor ->
-                        this.declarationStorage.getIrConstructorSymbol(firConstructor.symbol)
+                    val irConstructor = (annotationCall.toResolvedCallableSymbol() as? FirConstructorSymbol)?.let {
+                        this.declarationStorage.getIrConstructorSymbol(it)
                     }
                     if (irConstructor == null) {
                         IrErrorCallExpressionImpl(startOffset, endOffset, type, "No annotation constructor found: ${irClass.name}")
