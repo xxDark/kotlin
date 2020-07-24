@@ -81,6 +81,12 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                 acceptVoid(symbolRemapper)
                 transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrValueParameter
             }
+            irScript.declarations.forEach {
+                it.acceptVoid(symbolRemapper)
+            }
+            irScript.statements.forEach {
+                it.acceptVoid(symbolRemapper)
+            }
             irScriptClass.addConstructor {
                 isPrimary = true
             }.also { irConstructor ->
@@ -143,13 +149,11 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                         context.irBuiltIns.unitType
                     )
                     irScript.statements.forEach {
-                        it.acceptVoid(symbolRemapper)
                         +((it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass)) as IrStatement)
                     }
                 }
             }
             irScript.declarations.forEach {
-                it.acceptVoid(symbolRemapper)
                 val copy = it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrDeclaration
                 irScriptClass.declarations.add(copy)
             }
