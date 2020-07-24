@@ -357,12 +357,12 @@ abstract class BaseDiagnosticsTest : KotlinMultiFileTestWithJava<TestModule, Tes
             val jvmSignatureDiagnostics = HashSet<ActualDiagnostic>()
             val declarations = PsiTreeUtil.findChildrenOfType(ktFile, KtDeclaration::class.java)
             for (declaration in declarations) {
-                val diagnostics = getJvmSignatureDiagnostics(
-                    declaration,
-                    bindingContext.diagnostics,
-                    GlobalSearchScope.allScope(project)
-                ) ?: continue
-                jvmSignatureDiagnostics.addAll(diagnostics.forElement(declaration).map { ActualDiagnostic(it, null, newInferenceEnabled) })
+//                val diagnostics = getJvmSignatureDiagnostics(
+//                    declaration,
+//                    bindingContext.diagnostics,
+//                    GlobalSearchScope.allScope(project)
+//                ) ?: continue
+//                jvmSignatureDiagnostics.addAll(diagnostics.forElement(declaration).map { ActualDiagnostic(it, null, newInferenceEnabled) })
             }
             return jvmSignatureDiagnostics
         }

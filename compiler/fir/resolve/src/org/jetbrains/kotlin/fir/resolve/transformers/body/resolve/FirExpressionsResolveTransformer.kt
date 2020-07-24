@@ -943,6 +943,20 @@ open class FirExpressionsResolveTransformer(transformer: FirBodyResolveTransform
         return result.compose()
     }
 
+    override fun transformArrayOfCall(arrayOfCall: FirArrayOfCall, data: ResolutionMode): CompositeTransformResult<FirStatement> {
+        if (arrayOfCall.typeRef !is FirImplicitTypeRef) return arrayOfCall.compose()
+        arrayOfCall.argumentList.transformArguments(transformer, ResolutionMode.ContextIndependent)
+        arrayOfCall.argumentList.transformArguments(integerLiteralTypeApproximator, null)
+
+        val typesFromArguments = arrayOfCall.argumentList.arguments.map { it.resultType.coneType }
+        val inferredType = inferenceComponents.ctx.commonSuperTypeOrNull(typesFromArguments)
+        if (inferredType != null) {
+            arrayOfCall.resultType = arrayOfCall.resultType.resolvedTypeFromPrototype(inferredType.createArrayOf())
+        }
+
+        return arrayOfCall.compose()
+    }
+
     // ------------------------------------------------------------------------------------------------
 
     internal fun <T> storeTypeFromCallee(access: T) where T : FirQualifiedAccess, T : FirExpression {

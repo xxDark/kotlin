@@ -1,0 +1,14 @@
+FILE: arrayLiteralInAnnotation.kt
+    public final annotation class Ann : R|kotlin/Annotation| {
+        public constructor(stings: R|kotlin/Array<kotlin/String>|): R|Ann| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val stings: R|kotlin/Array<kotlin/String>| = R|<local>/stings|
+            public get(): R|kotlin/Array<kotlin/String>|
+
+    }
+    public final const val s: R|kotlin/String| = String(c)
+        public get(): R|kotlin/String|
+    @R|Ann|(<implicitArrayOf>(String(a), String(b), R|/s|)) public final fun test_1(): R|kotlin/Unit| {
+    }

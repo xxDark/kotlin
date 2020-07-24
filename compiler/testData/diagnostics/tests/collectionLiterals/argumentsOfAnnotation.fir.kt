@@ -9,7 +9,7 @@ fun test1() {}
 @Foo([], [], [])
 fun test2() {}
 
-@Foo([1f], [' '], [1])
+<!INAPPLICABLE_CANDIDATE!>@Foo([1f], [' '], [1])<!>
 fun test3() {}
 
 @Foo(c = [1f], b = [""], a = [1])

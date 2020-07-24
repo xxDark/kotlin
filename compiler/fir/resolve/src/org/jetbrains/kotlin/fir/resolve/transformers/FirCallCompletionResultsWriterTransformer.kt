@@ -451,6 +451,14 @@ class FirCallCompletionResultsWriterTransformer(
         return transformSyntheticCall(elvisExpression, data)
     }
 
+    override fun transformArrayOfCall(arrayOfCall: FirArrayOfCall, data: ExpectedArgumentType?): CompositeTransformResult<FirStatement> {
+        if (arrayOfCall.resultType !is FirImplicitTypeRef) return arrayOfCall.compose()
+        val expectedType = data?.getExpectedType(arrayOfCall)
+        val type = expectedType?.createArrayOf() ?: ConeClassErrorType("Can not resolve array literal")
+        arrayOfCall.resultType = arrayOfCall.resultType.resolvedTypeFromPrototype(type)
+        return arrayOfCall.compose()
+    }
+
     private inline fun <reified D> transformSyntheticCall(
         syntheticCall: D,
         data: ExpectedArgumentType?,

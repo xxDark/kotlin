@@ -12,19 +12,19 @@ annotation class Bar(val a: Array<KClass<*>> = [Int::class, Array<Int>::class, G
 @Foo([])
 fun test1() {}
 
-@Foo([Int::class, String::class])
+<!INAPPLICABLE_CANDIDATE!>@Foo([Int::class, String::class])<!>
 fun test2() {}
 
-@Foo([Array::class])
+<!INAPPLICABLE_CANDIDATE!>@Foo([Array::class])<!>
 fun test3() {}
 
-@Foo([Gen<Int>::class])
+<!INAPPLICABLE_CANDIDATE!>@Foo([Gen<Int>::class])<!>
 fun test4() {}
 
-@Foo([""])
+<!INAPPLICABLE_CANDIDATE!>@Foo([""])<!>
 fun test5() {}
 
-@Foo([Int::class, 1])
+<!INAPPLICABLE_CANDIDATE!>@Foo([Int::class, 1])<!>
 fun test6() {}
 
 @Bar

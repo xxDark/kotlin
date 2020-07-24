@@ -455,6 +455,11 @@ public class FirDiagnosticsTestGenerated extends AbstractFirDiagnosticsTest {
             runTest("compiler/fir/analysis-tests/testData/resolve/arguments/argumentsOfJavaAnnotation.kt");
         }
 
+        @TestMetadata("arrayLiteralInAnnotation.kt")
+        public void testArrayLiteralInAnnotation() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/arguments/arrayLiteralInAnnotation.kt");
+        }
+
         @TestMetadata("default.kt")
         public void testDefault() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/arguments/default.kt");

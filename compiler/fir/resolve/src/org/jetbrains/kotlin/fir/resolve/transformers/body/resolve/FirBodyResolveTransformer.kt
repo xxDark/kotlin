@@ -215,6 +215,10 @@ open class FirBodyResolveTransformer(
         return expressionsTransformer.transformCheckedSafeCallSubject(checkedSafeCallSubject, data)
     }
 
+    override fun transformArrayOfCall(arrayOfCall: FirArrayOfCall, data: ResolutionMode): CompositeTransformResult<FirStatement> {
+        return expressionsTransformer.transformArrayOfCall(arrayOfCall, data)
+    }
+
     // ------------------------------------- Declarations -------------------------------------
 
     override fun transformDeclaration(declaration: FirDeclaration, data: ResolutionMode): CompositeTransformResult<FirDeclaration> {

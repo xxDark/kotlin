@@ -17,7 +17,7 @@ fun test1_0() {}
 @Ann1(*["a", "b"])
 fun test1_1() {}
 
-@Ann1(*["a", 1, null])
+<!INAPPLICABLE_CANDIDATE!>@Ann1(*["a", 1, null])<!>
 fun test1_2() {}
 
 @Ann2(*[])
@@ -37,5 +37,5 @@ annotation class AnnArray(val a: Array<String>)
 <!INAPPLICABLE_CANDIDATE!>@AnnArray(*["/"])<!>
 fun testArray() {}
 
-@Ann1([""])
+<!INAPPLICABLE_CANDIDATE!>@Ann1([""])<!>
 fun testVararg() {}

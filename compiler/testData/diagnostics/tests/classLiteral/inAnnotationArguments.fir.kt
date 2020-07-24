@@ -42,4 +42,4 @@ inline val <reified T> T.test9
     )) object {}
 
 inline val <reified T> T.test10
-    get() = @AnnArray([T::class]) object {}
+    get() = <!INAPPLICABLE_CANDIDATE!>@AnnArray([T::class])<!> object {}
