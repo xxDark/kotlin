@@ -1,3 +1,4 @@
+// IGNORE_BACKEND_FIR: JVM_IR
 // !USE_EXPERIMENTAL: kotlin.ExperimentalStdlibApi
 // TARGET_BACKEND: JVM
 // WITH_RUNTIME
