@@ -901,6 +901,21 @@ public class FirDiagnosticsWithLightTreeTestGenerated extends AbstractFirDiagnos
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/anonymousObjectByDelegate.kt");
         }
 
+        @TestMetadata("classInSupertypeForEnum.kt")
+        public void testClassInSupertypeForEnum() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/classInSupertypeForEnum.kt");
+        }
+
+        @TestMetadata("constructorInInterface.kt")
+        public void testConstructorInInterface() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/constructorInInterface.kt");
+        }
+
+        @TestMetadata("delegationInInterface.kt")
+        public void testDelegationInInterface() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/delegationInInterface.kt");
+        }
+
         @TestMetadata("incompatibleModifiers.kt")
         public void testIncompatibleModifiers() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/incompatibleModifiers.kt");
@@ -911,9 +926,19 @@ public class FirDiagnosticsWithLightTreeTestGenerated extends AbstractFirDiagnos
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/infixFunctions.kt");
         }
 
+        @TestMetadata("interfaceWithSuperclass.kt")
+        public void testInterfaceWithSuperclass() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/interfaceWithSuperclass.kt");
+        }
+
         @TestMetadata("localAnnotationClass.kt")
         public void testLocalAnnotationClass() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/localAnnotationClass.kt");
+        }
+
+        @TestMetadata("methodOfAnyImplementedInInterface.kt")
+        public void testMethodOfAnyImplementedInInterface() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/methodOfAnyImplementedInInterface.kt");
         }
 
         @TestMetadata("notASupertype.kt")
@@ -941,6 +966,16 @@ public class FirDiagnosticsWithLightTreeTestGenerated extends AbstractFirDiagnos
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/repeatedModifier.kt");
         }
 
+        @TestMetadata("sealedClassConstructorCall.kt")
+        public void testSealedClassConstructorCall() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/sealedClassConstructorCall.kt");
+        }
+
+        @TestMetadata("sealedSupertype.kt")
+        public void testSealedSupertype() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/sealedSupertype.kt");
+        }
+
         @TestMetadata("superIsNotAnExpression.kt")
         public void testSuperIsNotAnExpression() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/superIsNotAnExpression.kt");
@@ -956,9 +991,19 @@ public class FirDiagnosticsWithLightTreeTestGenerated extends AbstractFirDiagnos
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/superclassNotAccessibleFromInterface.kt");
         }
 
+        @TestMetadata("supertypeInitializedInInterface.kt")
+        public void testSupertypeInitializedInInterface() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/supertypeInitializedInInterface.kt");
+        }
+
         @TestMetadata("typeOfAnnotationMember.kt")
         public void testTypeOfAnnotationMember() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/typeOfAnnotationMember.kt");
+        }
+
+        @TestMetadata("typeParametersInEnum.kt")
+        public void testTypeParametersInEnum() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/diagnostics/typeParametersInEnum.kt");
         }
 
         @TestMetadata("upperBoundViolated.kt")

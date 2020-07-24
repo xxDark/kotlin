@@ -87,6 +87,16 @@ object FirErrors {
     val REDUNDANT_MODALITY_MODIFIER by warning0<FirSourceElement, PsiElement>()
     val REDUNDANT_RETURN_UNIT_TYPE by warning0<FirSourceElement, PsiTypeElement>()
     val REDUNDANT_EXPLICIT_TYPE by warning0<FirSourceElement, PsiElement>()
+
+    val ANY_METHOD_IMPLEMENTED_IN_INTERFACE by error0<FirSourceElement, PsiElement>()
+    val SUPERTYPE_INITIALIZED_IN_INTERFACE by error0<FirSourceElement, PsiElement>()
+    val DELEGATION_IN_INTERFACE by error0<FirSourceElement, PsiElement>()
+    val INTERFACE_WITH_SUPERCLASS by error0<FirSourceElement, PsiElement>()
+    val CLASS_IN_SUPERTYPE_FOR_ENUM by error0<FirSourceElement, PsiElement>()
+    val TYPE_PARAMETERS_IN_ENUM by error0<FirSourceElement, PsiElement>()
+    val SEALED_CLASS_CONSTRUCTOR_CALL by error0<FirSourceElement, PsiElement>()
+    val SEALED_SUPERTYPE by error0<FirSourceElement, PsiElement>()
+    val SEALED_SUPERTYPE_IN_LOCAL_CLASS by error0<FirSourceElement, PsiElement>()
 }
 
 

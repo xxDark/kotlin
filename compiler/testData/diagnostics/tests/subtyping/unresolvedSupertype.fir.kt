@@ -1,6 +1,6 @@
 interface A1 : B
 
-interface A2 : B()
+interface A2 : <!SUPERTYPE_INITIALIZED_IN_INTERFACE!>B<!>()
 
 class A3 : B, B
 
