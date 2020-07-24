@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 }
 
 // FILE: javaAnnotation.kt
+// FIR_IDENTICAL
 @JavaAnn fun test1() {}
 
 @JavaAnn(value="abc", i=123) fun test2() {}

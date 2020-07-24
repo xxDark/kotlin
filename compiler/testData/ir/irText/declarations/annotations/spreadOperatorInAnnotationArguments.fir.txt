@@ -29,5 +29,5 @@ FILE fqName:<root> fileName:/spreadOperatorInAnnotationArguments.kt
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
   FUN name:test visibility:public modality:FINAL <> () returnType:kotlin.Unit
     annotations:
-      A(xs = ['a', 'b'])
+      A(xs = [CALL 'public final fun arrayOf <T> (vararg elements: T of kotlin.arrayOf): kotlin.Array<T of kotlin.arrayOf> [inline] declared in kotlin' type=kotlin.Array<kotlin.String> origin=null, CALL 'public final fun arrayOf <T> (vararg elements: T of kotlin.arrayOf): kotlin.Array<T of kotlin.arrayOf> [inline] declared in kotlin' type=kotlin.Array<kotlin.String> origin=null])
     BLOCK_BODY

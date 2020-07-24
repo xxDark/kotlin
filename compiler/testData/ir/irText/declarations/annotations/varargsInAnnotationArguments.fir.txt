@@ -91,7 +91,7 @@ FILE fqName:<root> fileName:/varargsInAnnotationArguments.kt
     BLOCK_BODY
   FUN name:test2 visibility:public modality:FINAL <> () returnType:kotlin.Unit
     annotations:
-      A1(xs = [])
-      A2(xs = [])
-      AA(xs = [])
+      A1(xs = <null>)
+      A2(xs = <null>)
+      AA(xs = <null>)
     BLOCK_BODY

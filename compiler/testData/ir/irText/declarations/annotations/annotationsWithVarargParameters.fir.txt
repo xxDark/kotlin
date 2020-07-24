@@ -37,5 +37,5 @@ FILE fqName:<root> fileName:/annotationsWithVarargParameters.kt
     BLOCK_BODY
   FUN name:test3 visibility:public modality:FINAL <> () returnType:kotlin.Unit
     annotations:
-      A(xs = [])
+      A(xs = <null>)
     BLOCK_BODY
