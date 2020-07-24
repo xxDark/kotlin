@@ -65,7 +65,7 @@ internal class FirScriptImpl(
         transformAnnotations(transformer, data)
         transformReturnTypeRef(transformer, data)
         transformReceiverTypeRef(transformer, data)
-        typeParameters.transformInplace(transformer, data)
+        transformTypeParameters(transformer, data)
         transformControlFlowGraphReference(transformer, data)
         transformValueParameters(transformer, data)
         transformBody(transformer, data)
@@ -85,6 +85,11 @@ internal class FirScriptImpl(
 
     override fun <D> transformReceiverTypeRef(transformer: FirTransformer<D>, data: D): FirScriptImpl {
         receiverTypeRef = receiverTypeRef?.transformSingle(transformer, data)
+        return this
+    }
+
+    override fun <D> transformTypeParameters(transformer: FirTransformer<D>, data: D): FirScriptImpl {
+        typeParameters.transformInplace(transformer, data)
         return this
     }
 

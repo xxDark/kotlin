@@ -56,6 +56,8 @@ abstract class FirScript : FirAnnotatedDeclaration, FirFunction<FirScript>, FirE
 
     abstract override fun <D> transformReceiverTypeRef(transformer: FirTransformer<D>, data: D): FirScript
 
+    abstract override fun <D> transformTypeParameters(transformer: FirTransformer<D>, data: D): FirScript
+
     abstract override fun <D> transformControlFlowGraphReference(transformer: FirTransformer<D>, data: D): FirScript
 
     abstract override fun <D> transformValueParameters(transformer: FirTransformer<D>, data: D): FirScript
