@@ -81,11 +81,6 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                 acceptVoid(symbolRemapper)
                 transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrValueParameter
             }
-            irScript.declarations.forEach {
-                it.acceptVoid(symbolRemapper)
-                val copy = it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrDeclaration
-                irScriptClass.declarations.add(copy)
-            }
             irScriptClass.addConstructor {
                 isPrimary = true
             }.also { irConstructor ->
@@ -113,29 +108,29 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                                 )
                             )
 
-//                            val getter = property.addGetter() {
-//                                returnType = callParameter.type
-//                            }
-//                            getter.dispatchReceiverParameter = irScriptClass.thisReceiver!!.copyTo(getter)
-//
-//                            getter.body = IrBlockBodyImpl(
-//                                UNDEFINED_OFFSET, UNDEFINED_OFFSET, listOf(
-//                                    IrReturnImpl(
-//                                        callParameter.startOffset, callParameter.endOffset, context.irBuiltIns.nothingType,
-//                                        getter.symbol,
-//                                        IrGetFieldImpl(
-//                                            callParameter.startOffset, callParameter.endOffset,
-//                                            field.symbol,
-//                                            callParameter.type,
-//                                            IrGetValueImpl(
-//                                                callParameter.startOffset, callParameter.endOffset,
-//                                                irScriptClass.thisReceiver!!.type,
-//                                                irScriptClass.thisReceiver!!.symbol
-//                                            )
-//                                        )
-//                                    )
-//                                )
-//                            )
+                            val getter = property.addGetter() {
+                                returnType = callParameter.type
+                            }
+                            getter.dispatchReceiverParameter = irScriptClass.thisReceiver!!.copyTo(getter)
+
+                            getter.body = IrBlockBodyImpl(
+                                UNDEFINED_OFFSET, UNDEFINED_OFFSET, listOf(
+                                    IrReturnImpl(
+                                        callParameter.startOffset, callParameter.endOffset, context.irBuiltIns.nothingType,
+                                        getter.symbol,
+                                        IrGetFieldImpl(
+                                            callParameter.startOffset, callParameter.endOffset,
+                                            field.symbol,
+                                            callParameter.type,
+                                            IrGetValueImpl(
+                                                callParameter.startOffset, callParameter.endOffset,
+                                                getter.dispatchReceiverParameter!!.type,
+                                                getter.dispatchReceiverParameter!!.symbol
+                                            )
+                                        )
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -152,6 +147,11 @@ private class ScriptToClassLowering(val context: JvmBackendContext) : FileLoweri
                         +((it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass)) as IrStatement)
                     }
                 }
+            }
+            irScript.declarations.forEach {
+                it.acceptVoid(symbolRemapper)
+                val copy = it.transform(deepCopyTransformer, null).patchDeclarationParents<IrElement>(irScriptClass) as IrDeclaration
+                irScriptClass.declarations.add(copy)
             }
             irScriptClass.annotations += irFile.annotations
             irScriptClass.metadata = irFile.metadata
