@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider.Companion.KOTLIN_NA
 import org.jetbrains.kotlin.gradle.plugin.compareVersionNumbers
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.CompilationSourceSetUtil
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.targets.metadata.getMetadataCompilationForSourceSet
 import org.jetbrains.kotlin.gradle.targets.metadata.isKotlinGranularMetadataEnabled
@@ -28,9 +29,6 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.utils.addToStdlib.flattenTo
 import java.io.File
 import java.util.concurrent.Callable
-
-private val Project.isNativeDependencyPropagationEnabled: Boolean
-    get() = (findProperty("kotlin.native.enableDependencyPropagation") as? String)?.toBoolean() ?: true
 
 //for reflection call from KotlinCommonizerModelBuilder
 @JvmOverloads
@@ -44,7 +42,7 @@ internal fun Project.isAllowCommonizer(
     return compareVersionNumbers(kotlinVersion, "1.4") >= 0
             && multiplatformExtension.targets.any { it.platformType == KotlinPlatformType.native }
             && isKotlinGranularMetadataEnabled
-            && !isNativeDependencyPropagationEnabled // temporary fix: turn on commonizer only when native deps propagation is disabled
+            && PropertiesProvider(project).enableCommonizer
 }
 
 internal fun Project.setUpKotlinNativePlatformDependencies() {

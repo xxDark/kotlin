@@ -33,6 +33,7 @@ import java.util.concurrent.Callable
 internal const val ALL_COMPILE_METADATA_CONFIGURATION_NAME = "allSourceSetsCompileDependenciesMetadata"
 internal const val ALL_RUNTIME_METADATA_CONFIGURATION_NAME = "allSourceSetsRuntimeDependenciesMetadata"
 
+// TODO: in 1.4.20, get rid of this flag and refactor the codebase removing the usages
 internal val Project.isKotlinGranularMetadataEnabled: Boolean
     get() = PropertiesProvider(rootProject).enableGranularSourceSetsMetadata == true
 
@@ -488,6 +489,10 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
 }
 
 internal fun getPublishedCommonSourceSets(project: Project): Set<KotlinSourceSet> {
+    if (PropertiesProvider(project).compileIntermediateSourceSets == false) {
+        return setOf(project.kotlinExtension.sourceSets.getByName(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME))
+    }
+
     val compilationsBySourceSet: Map<KotlinSourceSet, Set<KotlinCompilation<*>>> =
         CompilationSourceSetUtil.compilationsBySourceSets(project)
 

@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
 import org.jetbrains.kotlin.gradle.dsl.NativeCacheKind
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType.Companion.jsCompilerProperty
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
 import org.jetbrains.kotlin.gradle.targets.native.DisabledNativeTargetsReporter
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.CacheBuilder
@@ -87,7 +88,13 @@ internal class PropertiesProvider private constructor(private val project: Proje
         get() = booleanProperty("kotlin.setJvmTargetFromAndroidCompileOptions")
 
     val enableGranularSourceSetsMetadata: Boolean?
-        get() = booleanProperty("kotlin.mpp.enableGranularSourceSetsMetadata")
+        get() = booleanProperty(KotlinMultiplatformPlugin.LEGACY_GRANULAR_METADATA_PROPERTY)
+
+    val compileIntermediateSourceSets: Boolean
+        get() = booleanProperty("kotlin.mpp.compileIntermediateSourceSets") ?: true
+
+    val enableCommonizer: Boolean
+        get() = booleanProperty("kotlin.mpp.enableCommonizer") ?: true
 
     val enableCompatibilityMetadataVariant: Boolean?
         get() = booleanProperty("kotlin.mpp.enableCompatibilityMetadataVariant")

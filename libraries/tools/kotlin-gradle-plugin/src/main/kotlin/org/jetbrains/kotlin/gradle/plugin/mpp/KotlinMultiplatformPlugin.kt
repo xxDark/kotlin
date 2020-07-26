@@ -10,14 +10,12 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.AttributeContainer
-import org.gradle.api.internal.FeaturePreviews
 import org.gradle.api.internal.plugins.DslObject
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.internal.publication.MavenPublicationInternal
-import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.jvm.tasks.Jar
@@ -37,11 +35,8 @@ import org.jetbrains.kotlin.gradle.plugin.sources.sourceSetDependencyConfigurati
 import org.jetbrains.kotlin.gradle.plugin.statistics.KotlinBuildStatsService
 import org.jetbrains.kotlin.gradle.scripting.internal.ScriptingGradleSubplugin
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTargetPreset
-import org.jetbrains.kotlin.gradle.targets.metadata.isKotlinGranularMetadataEnabled
-import org.jetbrains.kotlin.gradle.tasks.locateOrRegisterTask
 import org.jetbrains.kotlin.gradle.tasks.locateTask
 import org.jetbrains.kotlin.gradle.tasks.registerTask
-import org.jetbrains.kotlin.gradle.tasks.withType
 import org.jetbrains.kotlin.gradle.utils.*
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget.*
@@ -49,8 +44,7 @@ import org.jetbrains.kotlin.konan.target.presetName
 import org.jetbrains.kotlin.statistics.metrics.StringMetrics
 
 class KotlinMultiplatformPlugin(
-    private val kotlinPluginVersion: String,
-    private val featurePreviews: FeaturePreviews // TODO get rid of this internal API usage once we don't need it
+    private val kotlinPluginVersion: String
 ) : Plugin<Project> {
 
     private class TargetFromPresetExtension(val targetsContainer: KotlinTargetsContainerWithPresets) {
@@ -67,6 +61,8 @@ class KotlinMultiplatformPlugin(
 
         project.plugins.apply(JavaBasePlugin::class.java)
         SingleWarningPerBuild.show(project, "Kotlin Multiplatform Projects are an experimental feature.")
+
+        overrideLegacyProperties(project)
 
         val targetsContainer = project.container(KotlinTarget::class.java)
         val kotlinMultiplatformExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
@@ -103,6 +99,27 @@ class KotlinMultiplatformPlugin(
 
         project.pluginManager.apply(ScriptingGradleSubplugin::class.java)
     }
+
+    private fun overrideLegacyProperties(project: Project) = with(project) {
+        project.rootProject.findProperty(LEGACY_GRANULAR_METADATA_PROPERTY)?.let { value ->
+            reportIgnoredPropertyIn140(project, LEGACY_GRANULAR_METADATA_PROPERTY, value.toString())
+        }
+        // Set the property that indicates hierarchical project structure support – even though it should now be always enabled, some
+        // clients might still depend on this flag.
+        // TODO: in 1.4.20, get rid of this flag and refactor the codebase removing the usages
+        project.rootProject.extensions.extraProperties.set(LEGACY_GRANULAR_METADATA_PROPERTY, "true")
+
+        project.findProperty(LEGACY_COMMONIZER_PROPERTY)?.let { value ->
+            reportIgnoredPropertyIn140(project, LEGACY_COMMONIZER_PROPERTY, value.toString())
+        }
+        // The IDE looks at this property during import; set it to false to indicate that the dependency propagation is now always disabled;
+        project.extensions.extraProperties.set(LEGACY_COMMONIZER_PROPERTY, "false")
+    }
+
+    private fun reportIgnoredPropertyIn140(project: Project, key: String, value: String) = SingleWarningPerBuild.show(
+        project.rootProject,
+        "The property '$key' has no effect since Kotlin 1.4.0, the value '$value' is ignored."
+    )
 
     private fun setupAdditionalCompilerArguments(project: Project) {
         // common source sets use the compiler options from the metadata compilation:
@@ -246,7 +263,7 @@ class KotlinMultiplatformPlugin(
      * right dependencies for each source set, we put only the dependencies of the legacy common variant into the POM, i.e. commonMain API.
      */
     private fun filterMetadataDependencies(target: AbstractKotlinTarget, groupNameVersion: Triple<String?, String, String?>): Boolean {
-        if (target !is KotlinMetadataTarget || !target.project.isKotlinGranularMetadataEnabled) {
+        if (target !is KotlinMetadataTarget) {
             return true
         }
 
@@ -291,6 +308,9 @@ class KotlinMultiplatformPlugin(
 
     companion object {
         const val METADATA_TARGET_NAME = "metadata"
+
+        const val LEGACY_GRANULAR_METADATA_PROPERTY = "kotlin.mpp.enableGranularSourceSetsMetadata"
+        const val LEGACY_COMMONIZER_PROPERTY = "kotlin.native.enableDependencyPropagation"
 
         internal fun sourceSetFreeCompilerArgsPropertyName(sourceSetName: String) =
             "kotlin.mpp.freeCompilerArgsForSourceSet.$sourceSetName"

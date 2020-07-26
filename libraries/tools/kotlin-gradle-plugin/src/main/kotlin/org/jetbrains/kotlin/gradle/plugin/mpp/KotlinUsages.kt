@@ -130,10 +130,8 @@ object KotlinUsages {
             strategy.compatibilityRules.add(KotlinJavaRuntimeJarsCompatibility::class.java)
             strategy.disambiguationRules.add(KotlinUsagesDisambiguation::class.java)
 
-            if (project.isKotlinGranularMetadataEnabled) {
-                strategy.compatibilityRules.add(KotlinMetadataCompatibility::class.java)
-                strategy.disambiguationRules.add(KotlinMetadataDisambiguation::class.java)
-            }
+            strategy.compatibilityRules.add(KotlinMetadataCompatibility::class.java)
+            strategy.disambiguationRules.add(KotlinMetadataDisambiguation::class.java)
         }
     }
 }

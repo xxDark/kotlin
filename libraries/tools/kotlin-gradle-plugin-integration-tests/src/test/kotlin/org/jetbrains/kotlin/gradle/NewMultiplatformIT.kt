@@ -91,15 +91,15 @@ class NewMultiplatformIT : BaseGradleIT() {
         val appProject = transformProjectWithPluginsDsl(appProjectName, directoryPrefix = "new-mpp-lib-and-app")
         val oldStyleAppProject = Project("sample-old-style-app", directoryPrefix = "new-mpp-lib-and-app")
 
-        val compileTasksNames =
-            listOf("Jvm6", "NodeJs", "Metadata", "Wasm32", nativeHostTargetName.capitalize()).map { ":compileKotlin$it" }
+        val compileTasksNames = listOf("Jvm6", "NodeJs", "Wasm32", nativeHostTargetName.capitalize()).map { ":compileKotlin$it" }
+            .plus(":compileCommonMainKotlinMetadata")
 
         with(libProject) {
             build(
                 "publish"
             ) {
                 assertSuccessful()
-                assertTasksExecuted(*compileTasksNames.toTypedArray(), ":jvm6Jar", ":nodeJsJar", ":metadataJar")
+                assertTasksExecuted(*compileTasksNames.toTypedArray(), ":jvm6Jar", ":nodeJsJar", ":allMetadataJar")
 
                 val groupDir = projectDir.resolve("repo/com/example")
                 val jvmJarName = "sample-lib-jvm6/1.0/sample-lib-jvm6-1.0.jar"
@@ -311,8 +311,8 @@ class NewMultiplatformIT : BaseGradleIT() {
                         "NodeJs${IR.lowerName.capitalize()}",
                     )
                 }),
-                "Metadata"
             ).map { ":compileKotlin$it" }
+                .plus("compileCommonMainKotlinMetadata")
 
         with(libProject) {
             build(
@@ -320,7 +320,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                 options = defaultBuildOptions().copy(jsCompilerType = jsCompilerType)
             ) {
                 assertSuccessful()
-                assertTasksExecuted(*compileTasksNames.toTypedArray(), ":metadataJar")
+                assertTasksExecuted(*compileTasksNames.toTypedArray(), ":allMetadataJar")
 
                 val groupDir = projectDir.resolve("repo/com/example")
                 val jsExtension = if (jsCompilerType == LEGACY) "jar" else "klib"
@@ -751,7 +751,7 @@ class NewMultiplatformIT : BaseGradleIT() {
         )
 
         listOf(
-            "compileKotlinMetadata", "compileKotlinJvm6", "compileKotlinNodeJs", "compileKotlin${nativeHostTargetName.capitalize()}"
+            "compileCommonMainKotlinMetadata", "compileKotlinJvm6", "compileKotlinNodeJs", "compileKotlin${nativeHostTargetName.capitalize()}"
         ).forEach {
             build(it) {
                 assertSuccessful()
@@ -941,7 +941,7 @@ class NewMultiplatformIT : BaseGradleIT() {
 
             build("printMetadataFiles") {
                 assertSuccessful()
-                assertContains(pathPrefix + "sample-lib-metadata-1.0.jar")
+                assertContains(pathPrefix + "sample-lib-metadata-1.0-commonMain.jar")
             }
         }
     }
@@ -1134,8 +1134,10 @@ class NewMultiplatformIT : BaseGradleIT() {
             .takeIf { HostManager.hostIsMac }
             .orEmpty()
 
+        val disableCommonizerArg = "-Pkotlin.mpp.enableCommonizer=false"
+
         // Building
-        build("assemble") {
+        build("assemble", disableCommonizerArg) {
             assertSuccessful()
 
             sharedPaths.forEach { assertFileExists(it) }
@@ -1146,7 +1148,7 @@ class NewMultiplatformIT : BaseGradleIT() {
         }
 
         // Test that all up-to date checks are correct
-        build("assemble") {
+        build("assemble", disableCommonizerArg) {
             assertSuccessful()
             assertTasksUpToDate(linkTasks)
             assertTasksUpToDate(frameworkTasks)
@@ -1159,7 +1161,7 @@ class NewMultiplatformIT : BaseGradleIT() {
             assertTrue(projectDir.resolve(frameworkPaths[0]).deleteRecursively())
         }
 
-        build("assemble") {
+        build("assemble", disableCommonizerArg) {
             assertSuccessful()
             assertTasksUpToDate(linkTasks.drop(1))
             assertTasksUpToDate(klibTask)
