@@ -186,7 +186,7 @@ public class ValueArgumentsToParametersMapper {
                         report(NAMED_ARGUMENTS_NOT_ALLOWED.on(nameReference, EXPECTED_CLASS_MEMBER));
                     }
                     else if (!candidate.hasStableParameterNames()) {
-                        @NotNull BadNamedArgumentsTarget badNamedArgumentsTarget;
+                        BadNamedArgumentsTarget badNamedArgumentsTarget;
                         if (candidate instanceof FunctionInvokeDescriptor) {
                             badNamedArgumentsTarget = INVOKE_ON_FUNCTION_TYPE;
                         } else if (candidate instanceof DeserializedCallableMemberDescriptor) {
