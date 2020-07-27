@@ -94,18 +94,20 @@ object MppModuleConfigurator : ModuleConfigurator,
         modulePath: Path
     ): TaskResult<Unit> = inContextOfModuleConfigurator(module) {
         val mppFiles = mppSources.reference.propertyValue
-        module.subModules.mapSequenceIgnore mapTargets@{ target ->
+        val filesWithPaths = module.subModules.flatMap { target ->
             val moduleSubType = //TODO handle for non-simple target configurator
-                target.configurator.safeAs<SimpleTargetConfigurator>()?.moduleSubType ?: return@mapTargets UNIT_SUCCESS
-            val files = mppFiles.flatMap { it.getFilesFor(moduleSubType) }.distinctBy { it.uniqueIdentifier }
-            val fileTemplates = files.map { file ->
-                FileTemplate(
-                    file.fileDescriptor,
-                    projectPath / pathForFileInTarget(modulePath, module, file.javaPackage, file.filename, target, file.type),
-                    mapOf("package" to file.javaPackage?.asCodePackage())
-                )
-            }
-            TemplatesPlugin.fileTemplatesToRender.addValues(fileTemplates)
+                target.configurator.safeAs<SimpleTargetConfigurator>()?.moduleSubType ?: return@flatMap emptyList()
+            mppFiles
+                .flatMap { it.getFilesFor(moduleSubType) }
+                .distinctBy { it.uniqueIdentifier }
+                .map { file ->
+                    val path = projectPath / pathForFileInTarget(modulePath, module, file.javaPackage, file.filename, target, file.type)
+                    file to path
+                }
+        }.distinctBy { (_, path) -> path }
+        filesWithPaths.mapSequenceIgnore { (file, path) ->
+            val fileTemplate = FileTemplate(file.fileDescriptor, path, mapOf("package" to file.javaPackage?.asCodePackage()))
+            TemplatesPlugin.fileTemplatesToRender.addValues(fileTemplate)
         }
     }
 

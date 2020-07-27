@@ -179,6 +179,7 @@ class KotlinPlugin(context: Context) : Plugin(context) {
         listOf(
             projectKind,
             modules,
+            createResourceDirectories,
         )
 
     override val pipelineTasks: List<PipelineTask> =
