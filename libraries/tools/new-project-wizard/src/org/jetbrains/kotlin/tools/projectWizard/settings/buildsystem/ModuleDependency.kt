@@ -201,8 +201,6 @@ private fun Writer.addExpectFilesForMppModuleForAndroidAndIos(mppModule: Module,
 
     val expectFiles = mppSources(javaPackage) {
         mppFile("Platform.kt") {
-            `package` = javaPackage.asCodePackage()
-
             `class`("Platform") {
                 expectBody = "val platform: String"
                 actualFor(

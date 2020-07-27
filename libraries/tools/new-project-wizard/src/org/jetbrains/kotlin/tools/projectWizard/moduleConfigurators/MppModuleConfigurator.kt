@@ -155,8 +155,7 @@ data class MppFile(
     }
 
     @ExpectFileDSL
-    class Builder(private val filename: String) {
-        var `package`: String? = null
+    class Builder(private val filename: String, val javaPackage: JavaPackage? = null) {
         private val declarations = mutableListOf<MppDeclaration>()
 
         fun function(signature: String, init: MppFunction.Builder.() -> Unit = {}) {
@@ -167,7 +166,7 @@ data class MppFile(
             declarations += MppClass.Builder(name).apply(init).build()
         }
 
-        fun build() = MppFile(filename, `package`?.let(::JavaPackage), declarations)
+        fun build() = MppFile(filename, javaPackage, declarations)
     }
 }
 
@@ -183,7 +182,7 @@ class MppSources(val mppFiles: List<MppFile>, val simpleFiles: List<SimpleFiles>
         private val simpleFiles = mutableListOf<SimpleFiles>()
 
         fun mppFile(filename: String, init: MppFile.Builder.() -> Unit) {
-            mppFiles += MppFile.Builder(filename).apply(init).build()
+            mppFiles += MppFile.Builder(filename, javaPackage).apply(init).build()
         }
 
         fun filesFor(vararg moduleSubTypes: ModuleSubType, init: SimpleFiles.Builder.() -> Unit) {
@@ -220,7 +219,7 @@ data class SimpleFile(val fileDescriptor: FileDescriptor, val javaPackage: JavaP
 }
 
 
-fun mppSources(javaPackage: JavaPackage, init: MppSources.Builder.() -> Unit): MppSources =
+fun mppSources(javaPackage: JavaPackage? = null, init: MppSources.Builder.() -> Unit): MppSources =
     MppSources.Builder(javaPackage).apply(init).build()
 
 sealed class MppDeclaration {
