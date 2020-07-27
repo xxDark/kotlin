@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
+ */
+
 package org.jetbrains.kotlin.tools.projectWizard.plugins.kotlin
 
 import org.jetbrains.kotlin.tools.projectWizard.KotlinNewProjectWizardBundle
@@ -129,13 +134,19 @@ class KotlinPlugin(context: Context) : Plugin(context) {
             }
         }
 
+        var createResourceDirectories = true
+
         val createSourcesetDirectories by pipelineTask(GenerationPhase.PROJECT_GENERATION) {
             runAfter(KotlinPlugin.createModules)
             withAction {
                 fun Path.createKotlinAndResourceDirectories(moduleConfigurator: ModuleConfigurator) =
                     with(service<FileSystemWizardService>()) {
                         createDirectory(this@createKotlinAndResourceDirectories / moduleConfigurator.kotlinDirectoryName) andThen
-                                createDirectory(this@createKotlinAndResourceDirectories / moduleConfigurator.resourcesDirectoryName)
+                                if (createResourceDirectories) {
+                                    createDirectory(this@createKotlinAndResourceDirectories / moduleConfigurator.resourcesDirectoryName)
+                                } else {
+                                    Success(Unit)
+                                }
                     }
 
                 forEachModule { moduleIR ->

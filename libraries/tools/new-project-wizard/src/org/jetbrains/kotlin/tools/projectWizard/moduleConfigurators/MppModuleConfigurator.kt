@@ -39,6 +39,8 @@ object MppModuleConfigurator : ModuleConfigurator,
     override val text = KotlinNewProjectWizardBundle.message("module.configurator.mpp")
     override val canContainSubModules = true
 
+    var generateTest = false
+
     override fun createKotlinPluginIR(configurationData: ModulesToIrConversionData, module: Module): KotlinBuildSystemPluginIR? =
         KotlinBuildSystemPluginIR(
             KotlinBuildSystemPluginIR.Type.multiplatform,
