@@ -9,7 +9,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.kotlin.tools.projectWizard.KotlinNewProjectWizardBundle
 import org.jetbrains.kotlin.tools.projectWizard.core.*
 import org.jetbrains.kotlin.tools.projectWizard.core.entity.properties.ModuleConfiguratorProperty
+import org.jetbrains.kotlin.tools.projectWizard.core.entity.settings.ModuleConfiguratorSetting
 import org.jetbrains.kotlin.tools.projectWizard.ir.buildsystem.KotlinBuildSystemPluginIR
+import org.jetbrains.kotlin.tools.projectWizard.phases.GenerationPhase
+import org.jetbrains.kotlin.tools.projectWizard.plugins.kotlin.KotlinPlugin
 import org.jetbrains.kotlin.tools.projectWizard.plugins.kotlin.ModuleSubType
 import org.jetbrains.kotlin.tools.projectWizard.plugins.kotlin.ModulesToIrConversionData
 import org.jetbrains.kotlin.tools.projectWizard.plugins.projectPath
@@ -39,8 +42,6 @@ object MppModuleConfigurator : ModuleConfigurator,
     override val text = KotlinNewProjectWizardBundle.message("module.configurator.mpp")
     override val canContainSubModules = true
 
-    var generateTest = false
-
     override fun createKotlinPluginIR(configurationData: ModulesToIrConversionData, module: Module): KotlinBuildSystemPluginIR? =
         KotlinBuildSystemPluginIR(
             KotlinBuildSystemPluginIR.Type.multiplatform,
@@ -51,6 +52,13 @@ object MppModuleConfigurator : ModuleConfigurator,
 
     override fun getConfiguratorProperties(): List<ModuleConfiguratorProperty<*>> =
         listOf(mppSources)
+
+    val generateTests by booleanSetting("Generate Tests", GenerationPhase.PROJECT_GENERATION) {
+        defaultValue = value(false)
+    }
+
+    override fun getConfiguratorSettings(): List<ModuleConfiguratorSetting<*, *>> =
+        super.getConfiguratorSettings() + generateTests
 
     override fun Writer.runArbitraryTask(
         configurationData: ModulesToIrConversionData,

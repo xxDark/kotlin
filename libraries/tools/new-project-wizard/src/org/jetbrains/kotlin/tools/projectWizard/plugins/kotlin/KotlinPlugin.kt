@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.tools.projectWizard.ir.buildsystem.BuildFileIR
 import org.jetbrains.kotlin.tools.projectWizard.ir.buildsystem.RepositoryIR
 import org.jetbrains.kotlin.tools.projectWizard.ir.buildsystem.withIrs
 import org.jetbrains.kotlin.tools.projectWizard.moduleConfigurators.ModuleConfigurator
+import org.jetbrains.kotlin.tools.projectWizard.moduleConfigurators.inContextOfModuleConfigurator
 import org.jetbrains.kotlin.tools.projectWizard.phases.GenerationPhase
 import org.jetbrains.kotlin.tools.projectWizard.plugins.StructurePlugin
 import org.jetbrains.kotlin.tools.projectWizard.plugins.buildSystem.BuildSystemPlugin
@@ -134,7 +135,9 @@ class KotlinPlugin(context: Context) : Plugin(context) {
             }
         }
 
-        var createResourceDirectories = true
+        val createResourceDirectories by booleanSetting("Generate Resource Folders", GenerationPhase.PROJECT_GENERATION) {
+            defaultValue = value(true)
+        }
 
         val createSourcesetDirectories by pipelineTask(GenerationPhase.PROJECT_GENERATION) {
             runAfter(KotlinPlugin.createModules)
@@ -142,10 +145,10 @@ class KotlinPlugin(context: Context) : Plugin(context) {
                 fun Path.createKotlinAndResourceDirectories(moduleConfigurator: ModuleConfigurator) =
                     with(service<FileSystemWizardService>()) {
                         createDirectory(this@createKotlinAndResourceDirectories / moduleConfigurator.kotlinDirectoryName) andThen
-                                if (createResourceDirectories) {
+                                if (createResourceDirectories.settingValue) {
                                     createDirectory(this@createKotlinAndResourceDirectories / moduleConfigurator.resourcesDirectoryName)
                                 } else {
-                                    Success(Unit)
+                                    UNIT_SUCCESS
                                 }
                     }
 
