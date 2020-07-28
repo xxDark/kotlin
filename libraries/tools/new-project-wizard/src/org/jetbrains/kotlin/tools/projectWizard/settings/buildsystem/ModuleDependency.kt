@@ -211,7 +211,7 @@ private fun Writer.addExpectFilesForMppModuleForAndroidAndIos(mppModule: Module,
                 actualFor(
                     ModuleSubType.iosArm64, ModuleSubType.iosX64, ModuleSubType.ios,
                     actualBody =
-                    """actual val platform: String = UIDevice.currentDevice.systemName() + " " +  UIDevice.currentDevice.systemVersion"""
+                    """actual val platform: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion"""
                 ) {
                     import("platform.UIKit.UIDevice")
                 }
