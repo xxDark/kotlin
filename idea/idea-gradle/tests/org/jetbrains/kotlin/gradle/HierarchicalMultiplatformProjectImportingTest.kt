@@ -102,7 +102,7 @@ class HierarchicalMultiplatformProjectImportingTest : MultiplePluginVersionGradl
                 moduleDependency("my-app.commonMain", DependencyScope.TEST)
                 moduleDependency("my-app.commonTest", DependencyScope.TEST)
                 moduleDependency("my-app.jsMain", DependencyScope.TEST)
-                moduleDependency("my-app.jsMain", DependencyScope.RUNTIME)
+                moduleDependency("my-app.jsMain", DependencyScope.RUNTIME)  // Temporary dependency, need to remove after KT-40551 is solved
                 moduleDependency("my-app.jvmAndJsMain", DependencyScope.TEST)
                 moduleDependency("my-app.jvmAndJsTest", DependencyScope.TEST)
                 moduleDependency("my-app.linuxAndJsMain", DependencyScope.TEST)
@@ -162,7 +162,7 @@ class HierarchicalMultiplatformProjectImportingTest : MultiplePluginVersionGradl
                 moduleDependency("my-app.jvmAndJsMain", DependencyScope.TEST)
                 moduleDependency("my-app.jvmAndJsTest", DependencyScope.TEST)
                 moduleDependency("my-app.jvmMain", DependencyScope.TEST)
-                moduleDependency("my-app.jvmMain", DependencyScope.RUNTIME)
+                moduleDependency("my-app.jvmMain", DependencyScope.RUNTIME)  // Temporary dependency, need to remove after KT-40551 is solved
                 sourceFolder("src/jvmTest/kotlin", JavaSourceRootType.TEST_SOURCE)
                 sourceFolder("src/jvmTest/resources", JavaResourceRootType.TEST_RESOURCE)
             }
@@ -271,7 +271,7 @@ class HierarchicalMultiplatformProjectImportingTest : MultiplePluginVersionGradl
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.commonMain", DependencyScope.TEST)
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.commonTest", DependencyScope.TEST)
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.jsMain", DependencyScope.TEST)
-                moduleDependency("jvm-on-mpp.hmpp-mod-a.jsMain", DependencyScope.RUNTIME)
+                moduleDependency("jvm-on-mpp.hmpp-mod-a.jsMain", DependencyScope.RUNTIME)  // Temporary dependency, need to remove after KT-40551 is solved
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmAndJsMain", DependencyScope.TEST)
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmAndJsTest", DependencyScope.TEST)
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.linuxAndJsMain", DependencyScope.TEST)
@@ -299,7 +299,7 @@ class HierarchicalMultiplatformProjectImportingTest : MultiplePluginVersionGradl
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmAndJsMain", DependencyScope.TEST)
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmAndJsTest", DependencyScope.TEST)
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmMain", DependencyScope.TEST)
-                moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmMain", DependencyScope.RUNTIME)
+                moduleDependency("jvm-on-mpp.hmpp-mod-a.jvmMain", DependencyScope.RUNTIME)  // Temporary dependency, need to remove after KT-40551 is solved
             }
             module("jvm-on-mpp.hmpp-mod-a.linuxAndJsMain") {
                 moduleDependency("jvm-on-mpp.hmpp-mod-a.commonMain", DependencyScope.COMPILE)
