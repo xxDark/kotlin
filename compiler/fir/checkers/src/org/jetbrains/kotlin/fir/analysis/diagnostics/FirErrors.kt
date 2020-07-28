@@ -89,6 +89,11 @@ object FirErrors {
     val REDUNDANT_MODALITY_MODIFIER by warning0<FirSourceElement, PsiElement>()
     val REDUNDANT_RETURN_UNIT_TYPE by warning0<FirSourceElement, PsiTypeElement>()
     val REDUNDANT_EXPLICIT_TYPE by warning0<FirSourceElement, PsiElement>()
+
+    val NO_TYPE_FOR_TYPE_PARAMETER by error0<FirSourceElement, PsiElement>()
+    val UNKNOWN_CALLABLE_KIND by error0<FirSourceElement, PsiElement>()
+    val ILLEGAL_PROJECTION_USAGE by error0<FirSourceElement, PsiElement>()
+    val MISSING_STDLIB_CLASS by error0<FirSourceElement, PsiElement>()
 }
 
 
