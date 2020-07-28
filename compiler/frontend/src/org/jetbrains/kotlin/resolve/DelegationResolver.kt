@@ -165,11 +165,9 @@ class DelegationResolver<T : CallableMemberDescriptor> private constructor(
                 .asIterable()
                 .sortedWith(MemberComparator.INSTANCE)
 
-            // K/JS: In case of `by definedExternally` delegated declarations are skipped so
-            // to make it work propagate nothing ype into delegating interface type
             val isExternal = descriptor.isEffectivelyExternal()
             val scopeType = delegateExpressionType?.let {
-                if (it.isNothing() && isExternal) null else it
+                if (it.isNothing()) null else it
             } ?: toInterface.defaultType
             val scope = scopeType.memberScope
 
