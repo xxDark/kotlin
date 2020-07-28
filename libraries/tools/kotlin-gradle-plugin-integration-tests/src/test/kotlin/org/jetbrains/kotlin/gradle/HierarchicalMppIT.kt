@@ -296,7 +296,7 @@ class HierarchicalMppIT : BaseGradleIT() {
             shouldInclude = listOf(
                 "my-lib-foo" to "main",
                 "my-lib-foo" to "jvmAndJsMain",
-                "third-party-lib-metadata-1.0" to ""
+                "third-party-lib" to "commonMain"
             ),
             shouldNotInclude = listOf(
                 "my-lib-foo" to "linuxAndJsMain"
@@ -344,7 +344,7 @@ class HierarchicalMppIT : BaseGradleIT() {
                 "my-lib-bar" to "jvmAndJsMain",
                 "my-lib-foo" to "main",
                 "my-lib-foo" to "jvmAndJsMain",
-                "third-party-lib-metadata-1.0" to ""
+                "third-party-lib" to "commonMain"
             ),
             shouldNotInclude = listOf(
                 "my-lib-bar" to "linuxAndJsMain",

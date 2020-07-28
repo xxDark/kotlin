@@ -89,7 +89,6 @@ class NewMultiplatformIT : BaseGradleIT() {
     ) {
         val libProject = transformProjectWithPluginsDsl(libProjectName, directoryPrefix = "new-mpp-lib-and-app")
         val appProject = transformProjectWithPluginsDsl(appProjectName, directoryPrefix = "new-mpp-lib-and-app")
-        val oldStyleAppProject = Project("sample-old-style-app", directoryPrefix = "new-mpp-lib-and-app")
 
         val compileTasksNames = listOf("Jvm6", "NodeJs", "Wasm32", nativeHostTargetName.capitalize()).map { ":compileKotlin$it" }
             .plus(":compileCommonMainKotlinMetadata")
@@ -140,7 +139,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                 Assert.assertTrue("function main(" in compiledJs)
 
                 val metadataJarEntries = ZipFile(groupDir.resolve(metadataJarName)).entries().asSequence().map { it.name }.toSet()
-                Assert.assertTrue("com/example/lib/CommonKt.kotlin_metadata" in metadataJarEntries)
+                Assert.assertTrue("commonMain/default/linkdata/package_com.example.lib/0_lib.knm" in metadataJarEntries)
 
                 Assert.assertTrue(groupDir.resolve(wasmKlibName).exists())
                 Assert.assertTrue(groupDir.resolve(nativeKlibName).exists())
@@ -178,8 +177,8 @@ class NewMultiplatformIT : BaseGradleIT() {
                     Assert.assertTrue(resolve("com/example/app/Jdk8ApiUsageKt.class").exists())
                 }
 
-                projectDir.resolve(targetClassesDir("metadata")).run {
-                    Assert.assertTrue(resolve("com/example/app/AKt.kotlin_metadata").exists())
+                projectDir.resolve(targetClassesDir("metadata", "commonMain")).run {
+                    Assert.assertTrue(resolve("default/linkdata/package_com.example/0_example.knm").exists())
                 }
 
                 projectDir.resolve(targetClassesDir("nodeJs")).resolve("sample-app.js").readText().run {
@@ -229,24 +228,6 @@ class NewMultiplatformIT : BaseGradleIT() {
                 "--rerun-tasks"
             ) {
                 checkAppBuild()
-            }
-        }
-
-        with(oldStyleAppProject) {
-            setupWorkingDir()
-            gradleBuildScript().appendText("\nallprojects { repositories { maven { url '$libLocalRepoUri' } } }")
-
-            build("assemble") {
-                assertSuccessful()
-                assertTasksExecuted(":app-js:compileKotlin2Js", ":app-jvm:compileKotlin", ":app-common:compileKotlinCommon")
-
-                assertFileExists(kotlinClassesDir("app-common") + "com/example/app/CommonAppKt.kotlin_metadata")
-
-                val jvmClassFile = projectDir.resolve(kotlinClassesDir("app-jvm") + "com/example/app/JvmAppKt.class")
-                checkBytecodeContains(jvmClassFile, "CommonKt.id", "MainKt.expectedFun")
-
-                val jsCompiledFilePath = kotlinClassesDir("app-js") + "app-js.js"
-                assertFileContains(jsCompiledFilePath, "lib.expectedFun", "lib.id")
             }
         }
     }
@@ -312,7 +293,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                     )
                 }),
             ).map { ":compileKotlin$it" }
-                .plus("compileCommonMainKotlinMetadata")
+                .plus(":compileCommonMainKotlinMetadata")
 
         with(libProject) {
             build(
@@ -361,7 +342,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                 }
 
                 val metadataJarEntries = ZipFile(groupDir.resolve(metadataJarName)).entries().asSequence().map { it.name }.toSet()
-                Assert.assertTrue("com/example/lib/CommonKt.kotlin_metadata" in metadataJarEntries)
+                Assert.assertTrue("commonMain/default/linkdata/package_com.example.lib/0_lib.knm" in metadataJarEntries)
             }
         }
 
@@ -385,8 +366,8 @@ class NewMultiplatformIT : BaseGradleIT() {
                 }
                 assertTasksExecuted(*compileTaskNames)
 
-                projectDir.resolve(targetClassesDir("metadata")).run {
-                    Assert.assertTrue(resolve("com/example/app/AKt.kotlin_metadata").exists())
+                projectDir.resolve(targetClassesDir("metadata", "commonMain")).run {
+                    Assert.assertTrue(resolve("default/linkdata/package_com.example/0_example.knm").exists())
                 }
 
                 if (jsCompilerType == LEGACY) {
@@ -774,7 +755,7 @@ class NewMultiplatformIT : BaseGradleIT() {
             }
         """.trimIndent())
 
-        listOf( "compileKotlinMetadata", "compileKotlinJvm6", "compileKotlinNodeJs").forEach {
+        listOf( "compileCommonMainKotlinMetadata", "compileKotlinJvm6", "compileKotlinNodeJs").forEach {
             build(it) {
                 assertSuccessful()
                 assertTasksExecuted(":$it")
@@ -993,27 +974,6 @@ class NewMultiplatformIT : BaseGradleIT() {
                 "publish"
             ) { assertSuccessful() }
             projectDir.resolve("repo")
-        }
-
-        with(Project("sample-old-style-app", gradleVersion, "new-mpp-lib-and-app")) {
-            setupWorkingDir()
-            gradleBuildScript().appendText("\nallprojects { repositories { maven { url '${repoDir.toURI()}' } } }")
-            gradleBuildScript("app-common").modify { it.replace("com.example:sample-lib:", "com.example:sample-lib-metadata:") }
-            gradleBuildScript("app-jvm").modify { it.replace("com.example:sample-lib:", "com.example:sample-lib-jvm6:") }
-            gradleBuildScript("app-js").modify { it.replace("com.example:sample-lib:", "com.example:sample-lib-nodejs:") }
-
-            build("assemble", "run") {
-                assertSuccessful()
-                assertTasksExecuted(":app-common:compileKotlinCommon", ":app-jvm:compileKotlin", ":app-jvm:run", ":app-js:compileKotlin2Js")
-            }
-
-            // Then run again without even reading the metadata from the repo:
-            projectDir.resolve("settings.gradle").modify { it.replace("enableFeaturePreview('GRADLE_METADATA')", "") }
-
-            build("assemble", "run", "--rerun-tasks") {
-                assertSuccessful()
-                assertTasksExecuted(":app-common:compileKotlinCommon", ":app-jvm:compileKotlin", ":app-jvm:run", ":app-js:compileKotlin2Js")
-            }
         }
 
         with(Project("sample-app-without-kotlin", gradleVersion, "new-mpp-lib-and-app")) {
@@ -1731,13 +1691,6 @@ class NewMultiplatformIT : BaseGradleIT() {
 
     @Test
     fun testNativeCompilerDownloading() {
-        // The plugin shouldn't download the K/N compiler if there are no corresponding targets in the project.
-        with(Project("sample-old-style-app", gradleVersion, "new-mpp-lib-and-app")) {
-            build("tasks") {
-                assertSuccessful()
-                assertFalse(output.contains("Kotlin/Native distribution: "))
-            }
-        }
         with(Project("new-mpp-native-libraries", gradleVersion)) {
             build("tasks") {
                 assertSuccessful()
