@@ -469,13 +469,11 @@ open class PodBuildTask : DefaultTask() {
     lateinit var pod: Provider<CocoapodsDependency>
 
     @get:Internal
-    internal var buildDirProvider: Provider<File> = project.provider {
-        project.file(
-            PodBuildSettingsProperties.readSettingsFromStream(
-                FileInputStream(buildSettingsFile.get())
-            ).buildDir
-        )
-    }
+    internal var buildDirProvider = project.file(
+        PodBuildSettingsProperties.readSettingsFromStream(
+            FileInputStream(buildSettingsFile.get())
+        ).buildDir
+    )
 
     @get:OutputFiles
     @get:Optional
@@ -512,7 +510,7 @@ open class PodBuildTask : DefaultTask() {
         }
         buildResult = project.provider {
             project.objects.fileCollection()
-                .from(buildDirProvider.get().walkTopDown().filter { it.isDirectory && it.name == pod.get().schemeName }.toList())
+                .from(buildDirProvider.walkTopDown().filter { it.isDirectory && it.name == pod.get().schemeName }.toList())
         }
     }
 }
