@@ -1,12 +1,5 @@
 // !USE_EXPERIMENTAL: kotlin.contracts.ExperimentalContracts
 
-/*
- * KOTLIN DIAGNOSTICS NOT LINKED SPEC TEST (POSITIVE)
- *
- * SECTIONS: contracts, declarations, contractBuilder, common
- * NUMBER: 1
- * DESCRIPTION: Functions with simple contracts.
- */
 
 import kotlin.contracts.*
 
