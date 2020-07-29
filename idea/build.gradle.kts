@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     kotlin("jvm")
     id("jps-compatible")
-    id("com.gradle.enterprise.test-distribution") version "1.0.2"
+    id("com.gradle.enterprise.test-distribution") version "1.1.1"
 }
 
 val kotlinVersion: String by rootProject.extra

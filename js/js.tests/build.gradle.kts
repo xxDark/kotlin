@@ -10,7 +10,7 @@ plugins {
     id("jps-compatible")
     id("com.github.node-gradle.node") version "2.2.0"
     id("de.undercouch.download")
-    id("com.gradle.enterprise.test-distribution") version "1.0.2"
+    id("com.gradle.enterprise.test-distribution") version "1.1.1"
 }
 
 node {
