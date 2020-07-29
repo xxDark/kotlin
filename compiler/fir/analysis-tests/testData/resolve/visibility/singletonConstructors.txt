@@ -21,8 +21,8 @@ FILE: singletonConstructors.kt
             super<R|kotlin/Any|>()
         }
 
-        private final val x: <ERROR TYPE REF: Inapplicable(HIDDEN): [/B.B]> = <Inapplicable(HIDDEN): [/B.B]>#()
-            private get(): <ERROR TYPE REF: Inapplicable(HIDDEN): [/B.B]>
+        private final val x: R|ERROR CLASS: Inapplicable(HIDDEN): [/B.B]| = <Inapplicable(HIDDEN): [/B.B]>#()
+            private get(): R|ERROR CLASS: Inapplicable(HIDDEN): [/B.B]|
 
     }
     public final class D : R|kotlin/Any| {
