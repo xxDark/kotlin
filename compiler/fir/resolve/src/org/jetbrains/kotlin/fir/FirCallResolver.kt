@@ -290,6 +290,7 @@ class FirCallResolver(
         delegatedConstructorCall: FirDelegatedConstructorCall,
         constructorClassSymbol: FirClassSymbol<*>,
         typeArguments: List<FirTypeProjection>,
+        constructedType: ConeClassLikeType
     ): FirDelegatedConstructorCall? {
         val name = Name.special("<init>")
         val callInfo = CallInfo(
@@ -304,9 +305,11 @@ class FirCallResolver(
             containingDeclarations,
         )
         towerResolver.reset()
+
         val result = towerResolver.runResolverForDelegatingConstructor(
             callInfo,
             constructorClassSymbol,
+            constructedType
         )
 
         return callResolver.selectDelegatingConstructorCall(delegatedConstructorCall, name, result, callInfo)

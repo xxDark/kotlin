@@ -35,7 +35,7 @@ interface TowerScopeLevel {
     sealed class Token<out T : AbstractFirBasedSymbol<*>> {
         object Properties : Token<FirVariableSymbol<*>>()
         object Functions : Token<FirFunctionSymbol<*>>()
-        object Constructors : Token<FirConstructorSymbol>()
+        object ConstructorsForDelegationCall : Token<FirConstructorSymbol>()
         object Objects : Token<AbstractFirBasedSymbol<*>>()
     }
 
@@ -159,7 +159,7 @@ class MemberScopeTowerLevel(
                     consumer(it as T)
                 }
             }
-            TowerScopeLevel.Token.Constructors -> processMembers(processor, forInnerConstructorDelegationCalls = true) { consumer ->
+            TowerScopeLevel.Token.ConstructorsForDelegationCall -> processMembers(processor, forInnerConstructorDelegationCalls = true) { consumer ->
                 this.processConstructorsByName(
                     name, session, bodyResolveComponents,
                     includeSyntheticConstructors = false,
@@ -276,7 +276,7 @@ class ScopeTowerLevel(
                     implicitExtensionReceiverValue = null
                 )
             }
-            TowerScopeLevel.Token.Constructors -> {
+            TowerScopeLevel.Token.ConstructorsForDelegationCall -> {
                 throw AssertionError("Should not be here")
             }
         }
@@ -286,7 +286,8 @@ class ScopeTowerLevel(
 
 class ConstructorScopeTowerLevel(
     session: FirSession,
-    val scope: FirScope
+    private val scope: FirScope,
+    private val dispatchReceiver: ImplicitReceiverValue<*>?,
 ) : SessionBasedTowerLevel(session) {
     override fun <T : AbstractFirBasedSymbol<*>> processElementsByName(
         token: TowerScopeLevel.Token<T>,
@@ -295,17 +296,14 @@ class ConstructorScopeTowerLevel(
     ): ProcessorAction {
         var empty = true
         when (token) {
-            TowerScopeLevel.Token.Constructors -> scope.processDeclaredConstructors { candidate ->
-                // NB: here we cannot resolve inner constructors, because they should have dispatch receiver
-                if (!candidate.fir.isInner) {
-                    empty = false
-                    @Suppress("UNCHECKED_CAST")
-                    processor.consumeCandidate(
-                        candidate as T,
-                        dispatchReceiverValue = null,
-                        implicitExtensionReceiverValue = null
-                    )
-                }
+            TowerScopeLevel.Token.ConstructorsForDelegationCall -> scope.processDeclaredConstructors { candidate ->
+                empty = false
+                @Suppress("UNCHECKED_CAST")
+                processor.consumeCandidate(
+                    candidate as T,
+                    dispatchReceiverValue = dispatchReceiver,
+                    implicitExtensionReceiverValue = null
+                )
             }
             else -> {
                 throw AssertionError("Should not be here: token = $token")

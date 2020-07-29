@@ -827,13 +827,18 @@ open class FirExpressionsResolveTransformer(transformer: FirBodyResolveTransform
             val symbol: FirClassSymbol<*> = when (reference) {
                 is FirThisReference -> {
                     typeArguments = emptyList()
-                    if (reference.boundSymbol == null) {
+                    val classSymbol = if (reference.boundSymbol == null) {
                         lastDispatchReceiver?.boundSymbol?.also {
                             reference.replaceBoundSymbol(it)
                         } ?: return delegatedConstructorCall.compose()
                     } else {
                         reference.boundSymbol!! as FirClassSymbol<*>
                     }
+
+
+                    (classSymbol.fir as? FirRegularClass)?.defaultType()
+
+                    classSymbol
                 }
                 is FirSuperReference -> {
                     // TODO: unresolved supertype
@@ -852,8 +857,22 @@ open class FirExpressionsResolveTransformer(transformer: FirBodyResolveTransform
                 }
                 else -> return delegatedConstructorCall.compose()
             }
-            val resolvedCall = callResolver.resolveDelegatingConstructorCall(delegatedConstructorCall, symbol, typeArguments)
-                ?: return delegatedConstructorCall.compose()
+
+            val constructorType: ConeClassLikeType = when (reference) {
+                is FirThisReference -> {
+                    lastDispatchReceiver?.type as? ConeClassLikeType ?: return delegatedConstructorCall.compose()
+                }
+                is FirSuperReference -> {
+                    // TODO: unresolved supertype
+                    val supertype = reference.superTypeRef.coneTypeSafe<ConeClassLikeType>() ?: return delegatedConstructorCall.compose()
+                    supertype.fullyExpandedType(session)
+                }
+                else -> return delegatedConstructorCall.compose()
+            }
+
+            val resolvedCall =
+                callResolver.resolveDelegatingConstructorCall(delegatedConstructorCall, symbol, typeArguments, constructorType)
+                    ?: return delegatedConstructorCall.compose()
             if (reference is FirThisReference && reference.boundSymbol == null) {
                 resolvedCall.dispatchReceiver.typeRef.coneTypeSafe<ConeClassLikeType>()?.lookupTag?.toSymbol(session)?.let {
                     reference.replaceBoundSymbol(it)
